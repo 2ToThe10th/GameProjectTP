@@ -1,4 +1,5 @@
 #include <iostream>
+#include "GameSocket.h"
 
 #ifdef DEBUG
 #include "gtest/gtest.h"
@@ -9,12 +10,21 @@ using std::cout;
 using std::endl;
 
 
-int main() {
+int main(int argv, char* args[]) {
 #ifdef DEBUG
     ::testing::InitGoogleTest();
     return RUN_ALL_TESTS();
 #endif
 
-    cout << "main" << endl;
+    string s;
+    getline(cin, s);
+    s += '\n';
+
+    GameSocket* sd = new GameSocket();
+
+    sd->Write(s);
+    sd->Read();
+
+    delete sd;
     return 0;
 }

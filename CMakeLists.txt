@@ -17,5 +17,5 @@ if(DEBUG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG=1")
 endif()
 
-add_executable(game src/main.cpp ${SOURCE_FILES})
+add_executable(game src/main.cpp src/GameSocket.cpp ${SOURCE_FILES})
 target_link_libraries(game gtest gtest_main)
