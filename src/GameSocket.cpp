@@ -5,13 +5,14 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include "errno.h"
 
 using std::string;
 using std::cout;
 using std::endl;
+using std::perror;
 
 int GameSocket::counter = 0;
-GameSocket* GameSocket::exist_object = nullptr;
 bool GameSocket::server = false;
 int GameSocket::server_sd = 0;
 int GameSocket::sd = 0;
@@ -37,12 +38,12 @@ GameSocket::GameSocket(int port) {
     server_sd = socket(PF_INET, SOCK_STREAM, 0);
 
     if(bind(server_sd, (sockaddr*)&addr, sizeof(addr)) != 0) {
-        cout << "error bind" << endl;
+        perror("error bind");
         throw -1;
     }
 
     if(listen(server_sd, 5) != 0) {
-        cout << "error listen" << endl;
+        perror("error listen" );
         throw -2;
     }
 
@@ -70,7 +71,7 @@ GameSocket::GameSocket(char host_name[], int port) {
     sd = socket(PF_INET, SOCK_STREAM, 0);
 
     if(connect(sd, (sockaddr*)&dest, sizeof(dest)) != 0) {
-        cout << "error connect" << endl;
+        perror("error connect" );
         throw -3;
     }
 
@@ -82,10 +83,14 @@ GameSocket::~GameSocket() {
 
     if(!counter) {
 
-        close(sd);
+        if(close(sd) != 0) {
+            perror("socket is not closed");
+        }
 
         if(server) {
-            close(server_sd);
+            if( close(server_sd) != 0) {
+                perror("server socket is not closed");
+            }
         }
     }
 }
@@ -95,7 +100,7 @@ string GameSocket::Read() {
     char char_message[MAX_MESSAGE_SIZE + 10];
 
     if(read(sd, char_message, MAX_MESSAGE_SIZE) == -1) {
-        cout << "error read" << endl;
+        perror("error read");
         throw -4;
     }
 
@@ -121,7 +126,7 @@ void GameSocket::Write(string &send_message) {
     char_message[MAX_MESSAGE_SIZE] = '\0';
 
     if(write(sd, char_message, MAX_MESSAGE_SIZE + 1) == -1) {
-        cout << "error write" << endl;
+        perror("error write");
         throw -5;
     }
 

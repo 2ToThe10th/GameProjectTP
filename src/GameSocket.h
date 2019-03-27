@@ -9,7 +9,6 @@ using std::string;
 class GameSocket {
 private:
     static int counter;
-    static GameSocket* exist_object;
     static bool server;
     static int server_sd;
     static int sd;
