@@ -1,4 +1,3 @@
-#pragma once
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "GameSocket.h"
@@ -26,7 +25,7 @@ TEST(GameSocket, clien) {
     getline(cin, s);
     s += '\n';
 
-    GameSocket* sd = new GameSocket("Predator");
+    GameSocket* sd = new GameSocket("127.0.0.1");
 
 
     sd->Write(s);

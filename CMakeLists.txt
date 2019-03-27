@@ -10,14 +10,16 @@ if(DEBUG)
 endif()
 
 include_directories(src)
-include_directories(test)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 if(DEBUG)
+    include_directories(test)
     set(SOURCE_FILES test/tests.cpp)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG=1")
 endif()
 
 add_executable(game src/main.cpp src/GameSocket.cpp ${SOURCE_FILES})
-target_link_libraries(game gtest gtest_main)
+if(DEBUG)
+    target_link_libraries(game gtest gtest_main)
+endif()
