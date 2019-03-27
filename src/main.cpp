@@ -23,7 +23,7 @@ int main(int argv, char* args[]) {
     GameSocket* sd = new GameSocket();
 
     sd->Write(s);
-    sd->Read();
+    cout << sd->Read();
 
     delete sd;
     return 0;

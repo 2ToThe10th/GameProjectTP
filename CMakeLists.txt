@@ -3,9 +3,11 @@ project(Game)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_subdirectory(googletest-master)
-include_directories(googletest-master/googletest/include)
-include_directories(googletest-master/googlemock/include)
+if(DEBUG)
+    add_subdirectory(googletest-master)
+    include_directories(googletest-master/googletest/include)
+    include_directories(googletest-master/googlemock/include)
+endif()
 
 include_directories(src)
 include_directories(test)
