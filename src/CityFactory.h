@@ -5,21 +5,25 @@
 #include "City.h"
 #include "Сolonist.h"
 #include <vector>
+#include <string>
 
-
+const int START_RESOURCES_AMT = 100500;
 
 class CityFactory {
 private:
     Player which_city_factory;
+    int gold_amt = START_RESOURCES_AMT;
+    int iron_amt = START_RESOURCES_AMT;
+    int wood_amt = START_RESOURCES_AMT;
+
 public:
-    int gold_amt;
-    int iron_amt;
-    int wood_amt;
     std::vector<City> cities;
 
-    explicit CityFactory(Player which);
+    CityFactory(Player which);
 
-    void AddCity(Colonist colonist);
+    void AddCity(Colonist colonist) {};
+
+    std::string Info();
 };
 
 

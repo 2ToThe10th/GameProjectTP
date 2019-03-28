@@ -6,6 +6,7 @@
 #include "AirUnitFactory.h"
 #include "EarthUnitFactory.h"
 #include "FireUnitFactory.h"
+#include "CityFactory.h"
 
 #ifdef DEBUG
 #include "gtest/gtest.h"
@@ -137,11 +138,19 @@ int main(int argv, char* args[]) {
 
     cout << opponent_factory->Info() << endl;
 
+    CityFactory* my_city_factory = new CityFactory(Player::Me);
+    CityFactory* opponent_city_factory = new CityFactory(Player::Opponent);
+
+    cout << my_city_factory->Info() << endl;
+    cout << opponent_city_factory->Info() << endl;
+
 //delete part
 
-    delete opponent_factory;
-    delete my_factory;
     delete socket;
+    delete my_factory;
+    delete opponent_factory;
+    delete my_city_factory;
+    delete opponent_city_factory;
 
     return 0;
 }
