@@ -39,6 +39,7 @@ GameSocket::GameSocket(int port) {
 
     if(bind(server_sd, (sockaddr*)&addr, sizeof(addr)) != 0) {
         perror("error bind");
+        cout << "This port is not free. Try to choose another port or wait while this port will became free.\n" << endl;
         throw -1;
     }
 
@@ -47,7 +48,7 @@ GameSocket::GameSocket(int port) {
         throw -2;
     }
 
-    cout << "waiting connection on hostname: " << host_name << " port: " << port << endl;
+    cout << "Waiting connection on hostname: " << host_name << " port: " << port << endl;
 
     unsigned int size_of_addr = sizeof(addr);
     sd = accept(server_sd, (sockaddr*)&addr, &size_of_addr);
@@ -74,8 +75,6 @@ GameSocket::GameSocket(char host_name[], int port) {
         perror("error connect" );
         throw -3;
     }
-
-    cout << "CONNECT" << endl;
 }
 
 GameSocket::~GameSocket() {

@@ -4,8 +4,9 @@
 #include "CombatUnit.h"
 
 class Archer: public CombatUnit {
-    explicit CombatUnit(Player which, Race race);
-    virtual ~CombatUnit();
+public:
+    Archer(Player which, Race race);
+    ~Archer();
 
     virtual void Go(Direction where) = 0;
     virtual void Attack(int x_to, int y_to) = 0;

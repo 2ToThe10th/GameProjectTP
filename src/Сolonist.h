@@ -5,7 +5,10 @@
 #include "Unit.h"
 
 class Colonist: public Unit {
+    ~Colonist();
 
+    void Info();
+    void Go(Direction where);
 };
 
 

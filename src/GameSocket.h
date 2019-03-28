@@ -13,8 +13,8 @@ private:
     static int server_sd;
     static int sd;
 public:
-    GameSocket(int port = 55000);
-    GameSocket(char host_name[], int port = 55000);
+    explicit GameSocket(int port);
+    explicit GameSocket(char host_name[], int port);
     GameSocket(const GameSocket& to_copy) = delete;
     GameSocket& operator=(const GameSocket&) = delete;
     ~GameSocket();
