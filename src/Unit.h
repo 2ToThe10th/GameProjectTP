@@ -1,23 +1,27 @@
 #ifndef GAME_UNIT_H
 #define GAME_UNIT_H
 
+#include <string>
 #include "Enums.h"
 #include "Location.h"
+
+class Map;
 
 class Unit {
 private:
     const int MAX_HEALTH;
     int health;
     Location location;
-    bool already_move;
-    bool frozen;
-public:
-    const Player which;
+    bool already_move = true;
+    bool frozen = false;
+    Map& map;
     const Race race;
-    explicit Unit(Player which, Race race);
-    virtual ~Unit();
+    const Player which;
+public:
+    explicit Unit(Player which, Race race, int health, Location city_location, Map& map);
+    virtual ~Unit() = default;
 
-    virtual void Info() = 0;
+    virtual std::string Info();
     virtual void Go(Direction where) = 0;
 
 };

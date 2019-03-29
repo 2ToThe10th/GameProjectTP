@@ -8,11 +8,14 @@ class CombatUnit: public Unit {
 private:
     int damage;
 public:
-    explicit CombatUnit(Player which, Race race);
-    virtual ~CombatUnit();
+    explicit CombatUnit(Player which, Race race, int health, Location city_location, Map& map, int damage);
+    ~CombatUnit() override = default;
 
-    virtual void Go(Direction where) = 0;
-    virtual void Attack(int x_to, int y_to) = 0;
+    std::string Info();
+
+    //TODO:
+    void Go(Direction where) override;
+    //virtual void Attack(int x_to, int y_to) = 0;
 };
 
 

@@ -5,11 +5,17 @@
 
 class Archer: public CombatUnit {
 public:
-    Archer(Player which, Race race);
-    ~Archer();
+    static const int cost_wood = 100;
+    static const int cost_iron = 50;
+    static const int cost_gold = 20;
 
-    virtual void Go(Direction where) = 0;
-    virtual void Attack(int x_to, int y_to) = 0;
+    explicit Archer(Player which, Race race, int health, Location city_location, Map& map, int damage);
+    ~Archer() override = default;
+
+    std::string Info() override;
+
+    //TODO:
+    //virtual void Attack(int x_to, int y_to) = 0;
 };
 
 

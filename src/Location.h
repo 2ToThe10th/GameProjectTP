@@ -2,18 +2,21 @@
 #define GAME_LOCATION_H
 
 
+#include <string>
 #include "Enums.h"
 
 class Location {
-private:
+public:
     int x;
     int y;
-public:
     explicit Location(int x, int y);
     Location(const Location& other_location);
     Location& operator=(const Location& other_location);
+    const bool operator== (const Location& other_location) const;
 
     Location Direction(Direction where);
+
+    std::string Info();
 };
 
 

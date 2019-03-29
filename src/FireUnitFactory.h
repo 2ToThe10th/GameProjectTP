@@ -7,14 +7,12 @@
 class FireUnitFactory: public UnitFactory {
 private:
 public:
-    FireUnitFactory(Player which);
-    ~FireUnitFactory() override {};
+    FireUnitFactory(Player which, Map& map, Money& money);
+    ~FireUnitFactory() override = default;
 
-    void AddWarrior(City where) override {};
-    void AddArcher(City where) override {};
-    void AddWizard(City where) override {};
-    void AddColonist(City where) override {};
-    void AddWorker(City where) override {};
+    void AddWarrior(City& where) override;
+    void AddArcher(City& where) override;
+    void AddWizard(City& where) override;
 
     std::string Info() override;
 };

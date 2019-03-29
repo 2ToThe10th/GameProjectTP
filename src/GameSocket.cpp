@@ -27,6 +27,11 @@ GameSocket::GameSocket(int port) {
     ++counter;
     server = true;
 
+    if(port <= 0 || port >= 65536) {
+        cout << "Port mighte be between 1 and 65535" << endl;
+        throw -9;
+    }
+
     sockaddr_in addr;
     bzero((void*)(&addr), sizeof(addr));
     addr.sin_family = AF_INET;
@@ -39,7 +44,7 @@ GameSocket::GameSocket(int port) {
 
     if(bind(server_sd, (sockaddr*)&addr, sizeof(addr)) != 0) {
         perror("error bind");
-        cout << "This port is not free. Try to choose another port or wait while this port will became free.\n" << endl;
+        cout << "This port is not free. Try to choose another port or wait while this port will became free." << endl;
         throw -1;
     }
 
@@ -62,6 +67,11 @@ GameSocket::GameSocket(char host_name[], int port) {
 
     ++counter;
     server = false;
+
+    if(port <= 0 || port >= 65536) {
+        cout << "Port mighte be between 1 and 65535" << endl;
+        throw -9;
+    }
 
     sockaddr_in dest;
     bzero((void*)(&dest), sizeof(dest));
