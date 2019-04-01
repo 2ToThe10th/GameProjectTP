@@ -10,3 +10,4 @@ std::string Unit::Info() {
 
 Unit::Unit(Player which, Race race, int health, Location city_location, Map& map):
            MAX_HEALTH(health), health(health), location(city_location), map(map), race(race), which(which) {}
+

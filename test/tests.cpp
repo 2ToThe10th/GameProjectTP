@@ -453,6 +453,8 @@ TEST(WaterFactory, add) {
     }
 
     EXPECT_EQ(map.Info(), sample);
+
+    delete factory;
 }
 
 TEST(EarthFactory, add) {
@@ -773,6 +775,8 @@ TEST(EarthFactory, add) {
     }
 
     EXPECT_EQ(map.Info(), sample);
+
+    delete factory;
 }
 
 TEST(AirFactory, add) {
@@ -1093,6 +1097,8 @@ TEST(AirFactory, add) {
     }
 
     EXPECT_EQ(map.Info(), sample);
+
+    delete factory;
 }
 
 TEST(FireFactory, add) {
@@ -1413,4 +1419,6 @@ TEST(FireFactory, add) {
     }
 
     EXPECT_EQ(map.Info(), sample);
+
+    delete factory;
 }

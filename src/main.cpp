@@ -45,8 +45,8 @@ int main(int argv, char* args[]) {
 
         cout << "Choose host:" << endl;
 
-        char* host;
-        if(scanf("%ms", &host) != 1) {
+        char host[1000];
+        if(scanf("%900s", host) != 1) {
             cout << "error: scanf host" << endl;
             throw -7;
         }

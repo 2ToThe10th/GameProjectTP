@@ -69,7 +69,7 @@ GameSocket::GameSocket(char host_name[], int port) {
     server = false;
 
     if(port <= 0 || port >= 65536) {
-        cout << "Port mighte be between 1 and 65535" << endl;
+        cout << "Port might be between 1 and 65535" << endl;
         throw -9;
     }
 
@@ -127,7 +127,7 @@ string GameSocket::Read() {
 }
 
 void GameSocket::Write(string &send_message) {
-    const int MAX_MESSAGE_SIZE = send_message.size();
+    const unsigned long MAX_MESSAGE_SIZE = send_message.size();
     char char_message[MAX_MESSAGE_SIZE + 10];
     for(int i = 0; i < MAX_MESSAGE_SIZE; ++i) {
         char_message[i] = send_message[i];
@@ -138,8 +138,6 @@ void GameSocket::Write(string &send_message) {
         perror("error write");
         throw -5;
     }
-
-    return;
 }
 
 

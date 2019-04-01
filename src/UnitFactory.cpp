@@ -21,12 +21,15 @@ UnitFactory::UnitFactory(enum::Player which, Map& map, Money& money, Race race):
 UnitFactory::~UnitFactory() {
     for(CombatUnit* i: list_combat_unit) {
         delete i;
+        i = nullptr;
     }
     for(Colonist* i: list_colonist) {
         delete i;
+        i = nullptr;
     }
     for(Worker* i: list_worker) {
         delete i;
+        i = nullptr;
     }
 }
 
