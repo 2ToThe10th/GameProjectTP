@@ -13,7 +13,7 @@ install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt update
   - sudo apt install gcc-snapshot
-  - sudo apt install gcc-6 g++-6
+  - sudo apt install gcc-7.4 g++-7.4
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
 
 script:
