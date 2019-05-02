@@ -10,7 +10,7 @@ compiler:
   - gcc
 
 install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt update
   - sudo apt install gcc-snapshot
   - sudo apt install gcc-6 g++-6
