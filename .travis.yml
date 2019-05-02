@@ -1,0 +1,16 @@
+dist: xenial
+sudo: required
+
+language: cpp
+
+os:
+  - linux
+
+compiler:
+  - gcc
+
+script:
+  - mkdir cmake-build-debug
+  - cd cmake-build-debug
+  - cmake ../
+  - make
