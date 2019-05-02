@@ -22,3 +22,9 @@ script:
   - cmake ../ -DDEBUG=True
   - make
   - ./game
+
+notifications:
+  email:
+    - grib.a@phystech.edu
+  on_success: always
+  on_failure: always
