@@ -25,6 +25,8 @@ script:
 
 notifications:
   email:
+    recipients:
     - grib.a@phystech.edu
-  on_success: always
-  on_failure: always
+    - grib.sasha2001@gmail.com
+    on_success: always
+    on_failure: always
