@@ -129,7 +129,7 @@ string GameSocket::Read() {
 void GameSocket::Write(string &send_message) {
     const unsigned long MAX_MESSAGE_SIZE = send_message.size();
     char char_message[MAX_MESSAGE_SIZE + 10];
-    for(int i = 0; i < MAX_MESSAGE_SIZE; ++i) {
+    for(unsigned long i = 0; i < MAX_MESSAGE_SIZE; ++i) {
         char_message[i] = send_message[i];
     }
     char_message[MAX_MESSAGE_SIZE] = '\0';
