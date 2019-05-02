@@ -9,6 +9,9 @@ os:
 compiler:
   - gcc
 
+install:
+  - sudo apt install g++-7
+
 script:
   - mkdir cmake-build-debug
   - cd cmake-build-debug
