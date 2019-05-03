@@ -10,12 +10,31 @@ using std::cout;
 using std::endl;
 
 std::string UnitFactory::Info() {
-    switch(which) {
-        case Me:
-            return "Me";
-        case Opponent:
-            return "Opponent";
+
+    std::string race_string = "";
+
+    switch (race) {
+        case Water:
+            race_string = "Water";
+            break;
+        case Air:
+            race_string = "Air";
+            break;
+        case Earth:
+            race_string = "Earth";
+            break;
+        case Fire:
+            race_string = "Fire";
+            break;
     }
+
+    switch (which) {
+        case Me:
+            return race_string + "Me";
+        case Opponent:
+            return race_string + "Opponent";
+    }
+
     return "";
 }
 
@@ -50,7 +69,29 @@ void UnitFactory::AddWarrior(City &where) {
         return;
     }
 
-    list_combat_unit.push_back(new Warrior(which, race, 100, where.location, map, 25));
+    int health = 0;
+    int damage = 0;
+
+    switch (race) {
+        case Water:
+            health = 100;
+            damage = 25;
+            break;
+        case Earth:
+            health = 120;
+            damage = 20;
+            break;
+        case Air:
+            health = 80;
+            damage = 35;
+            break;
+        case Fire:
+            health = 90;
+            damage = 30;
+            break;
+    }
+
+    list_combat_unit.push_back(new Warrior(which, race, health, where.location, map, damage));
 
     map.combat(where.location) = list_combat_unit.back();
 
@@ -75,8 +116,29 @@ void UnitFactory::AddArcher(City &where) {
         return;
     }
 
+    int health = 0;
+    int damage = 0;
 
-    list_combat_unit.push_back(new Archer(which, race, 75, where.location, map, 50));
+    switch (race) {
+        case Water:
+            health = 75;
+            damage = 50;
+            break;
+        case Earth:
+            health = 90;
+            damage = 40;
+            break;
+        case Air:
+            health = 60;
+            damage = 55;
+            break;
+        case Fire:
+            health = 70;
+            damage = 50;
+            break;
+    }
+
+    list_combat_unit.push_back(new Archer(which, race, health, where.location, map, damage));
 
     map.combat(where.location) = list_combat_unit.back();
 
@@ -101,7 +163,29 @@ void UnitFactory::AddWizard(City &where) {
         return;
     }
 
-    list_combat_unit.push_back(new Wizard(which, race, 150, where.location, map, 90));
+    int health = 0;
+    int damage = 0;
+
+    switch (race) {
+        case Water:
+            health = 150;
+            damage = 90;
+            break;
+        case Earth:
+            health = 170;
+            damage = 70;
+            break;
+        case Air:
+            health = 130;
+            damage = 110;
+            break;
+        case Fire:
+            health = 160;
+            damage = 80;
+            break;
+    }
+
+    list_combat_unit.push_back(new Wizard(which, race, health, where.location, map, damage));
 
     map.combat(where.location) = list_combat_unit.back();
 

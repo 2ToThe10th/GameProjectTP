@@ -578,7 +578,7 @@ TEST(EarthFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    EXPECT_EQ(factory->list_combat_unit[0]->Info(), "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25");
+    EXPECT_EQ(factory->list_combat_unit[0]->Info(), "Warrior health: 120 of MAX_HEALTH: 120 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 20");
 
     sample = "";
     sample += "Combat\n";
@@ -586,7 +586,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 120 of MAX_HEALTH: 120 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 20\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -652,7 +652,7 @@ TEST(EarthFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
-    EXPECT_EQ(factory->list_combat_unit[1]->Info(), "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50");
+    EXPECT_EQ(factory->list_combat_unit[1]->Info(), "Archer health: 90 of MAX_HEALTH: 90 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 40");
 
     sample = "";
     sample += "Combat\n";
@@ -660,9 +660,9 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 120 of MAX_HEALTH: 120 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 20\n";
             } else if(i == 3 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 90 of MAX_HEALTH: 90 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 40\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -719,7 +719,7 @@ TEST(EarthFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 3);
 
-    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 90");
+    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 170 of MAX_HEALTH: 170 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 70");
 
     sample = "";
     sample += "Combat\n";
@@ -727,11 +727,11 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 120 of MAX_HEALTH: 120 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 20\n";
             } else if(i == 3 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 90 of MAX_HEALTH: 90 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 40\n";
             } else if(i == 9 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 90\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 170 of MAX_HEALTH: 170 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 70\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -900,7 +900,7 @@ TEST(AirFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    EXPECT_EQ(factory->list_combat_unit[0]->Info(), "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25");
+    EXPECT_EQ(factory->list_combat_unit[0]->Info(), "Warrior health: 80 of MAX_HEALTH: 80 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 35");
 
     sample = "";
     sample += "Combat\n";
@@ -908,7 +908,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 80 of MAX_HEALTH: 80 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 35\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -974,7 +974,7 @@ TEST(AirFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
-    EXPECT_EQ(factory->list_combat_unit[1]->Info(), "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50");
+    EXPECT_EQ(factory->list_combat_unit[1]->Info(), "Archer health: 60 of MAX_HEALTH: 60 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 55");
 
     sample = "";
     sample += "Combat\n";
@@ -982,9 +982,9 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 80 of MAX_HEALTH: 80 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 35\n";
             } else if(i == 3 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 60 of MAX_HEALTH: 60 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 55\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1041,7 +1041,7 @@ TEST(AirFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 3);
 
-    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 90");
+    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 130 of MAX_HEALTH: 130 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 110");
 
     sample = "";
     sample += "Combat\n";
@@ -1049,11 +1049,11 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 80 of MAX_HEALTH: 80 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 35\n";
             } else if(i == 3 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 60 of MAX_HEALTH: 60 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 55\n";
             } else if(i == 9 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 90\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 130 of MAX_HEALTH: 130 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 110\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1222,7 +1222,7 @@ TEST(FireFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    EXPECT_EQ(factory->list_combat_unit[0]->Info(), "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25");
+    EXPECT_EQ(factory->list_combat_unit[0]->Info(), "Warrior health: 90 of MAX_HEALTH: 90 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 30");
 
     sample = "";
     sample += "Combat\n";
@@ -1230,7 +1230,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 90 of MAX_HEALTH: 90 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 30\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1296,7 +1296,7 @@ TEST(FireFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
-    EXPECT_EQ(factory->list_combat_unit[1]->Info(), "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50");
+    EXPECT_EQ(factory->list_combat_unit[1]->Info(), "Archer health: 70 of MAX_HEALTH: 70 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50");
 
     sample = "";
     sample += "Combat\n";
@@ -1304,9 +1304,9 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 90 of MAX_HEALTH: 90 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 30\n";
             } else if(i == 3 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 70 of MAX_HEALTH: 70 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1363,7 +1363,7 @@ TEST(FireFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 3);
 
-    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 90");
+    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 160 of MAX_HEALTH: 160 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 80");
 
     sample = "";
     sample += "Combat\n";
@@ -1371,11 +1371,11 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 100 of MAX_HEALTH: 100 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 25\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Warrior health: 90 of MAX_HEALTH: 90 location:  x:7 y:8 already_move: 1 frozen: 0 damage: 30\n";
             } else if(i == 3 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 70 of MAX_HEALTH: 70 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
             } else if(i == 9 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 90\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 160 of MAX_HEALTH: 160 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 80\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
