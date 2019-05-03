@@ -2,15 +2,11 @@
 #include <string>
 #include "GameSocket.h"
 #include "UnitFactory.h"
-#include "WaterUnitFactory.h"
-#include "AirUnitFactory.h"
-#include "EarthUnitFactory.h"
-#include "FireUnitFactory.h"
 #include "CityFactory.h"
 #include "Map.h"
 
 #ifdef DEBUG
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #endif
 
 using std::cin;
@@ -83,19 +79,19 @@ int main(int argv, char* args[]) {
         cin >> user_race;
 
         if (user_race == "Water" || user_race == "water" || user_race == "W" || user_race == "w") {
-            my_factory = new WaterUnitFactory(Player::Me, map, money);
+            my_factory = new UnitFactory(Player::Me, map, money, Race::Water);
             string_to_send = "w";
         } else
         if (user_race == "Air" || user_race == "air" || user_race == "A" || user_race == "a") {
-            my_factory = new AirUnitFactory(Player::Me, map, money);
+            my_factory = new UnitFactory(Player::Me, map, money, Race::Air);
             string_to_send = "a";
         } else
         if (user_race == "Earth" || user_race == "earth" || user_race == "E" || user_race == "e") {
-            my_factory = new EarthUnitFactory(Player::Me, map, money);
+            my_factory = new UnitFactory(Player::Me, map, money, Race::Earth);
             string_to_send = "e";
         } else
         if (user_race == "Fire" || user_race == "fire" || user_race == "F" || user_race == "f") {
-            my_factory = new FireUnitFactory(Player::Me, map, money);
+            my_factory = new UnitFactory(Player::Me, map, money, Race::Fire);
             string_to_send = "f";
         } else {
             cout << "It is not an exist race. Type one of the exist: Water, Fire, Earth, Air." << endl;
@@ -118,19 +114,19 @@ int main(int argv, char* args[]) {
     UnitFactory* opponent_factory = nullptr;
 
     if (opponent_race == "w") {
-        opponent_factory = new WaterUnitFactory(Player::Opponent, map, money);
+        opponent_factory = new UnitFactory(Player::Opponent, map, money, Race::Water);
         string_to_send = "w";
     } else
     if (opponent_race == "a") {
-        opponent_factory = new AirUnitFactory(Player::Opponent, map, money);
+        opponent_factory = new UnitFactory(Player::Opponent, map, money, Race::Air);
         string_to_send = "a";
     } else
     if (opponent_race == "e") {
-        opponent_factory = new EarthUnitFactory(Player::Opponent, map, money);
+        opponent_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
         string_to_send = "e";
     } else
     if (opponent_race == "f") {
-        opponent_factory = new FireUnitFactory(Player::Opponent, map, money);
+        opponent_factory = new UnitFactory(Player::Opponent, map, money, Race::Fire);
         string_to_send = "f";
     } else {
         cout << "Something wrong with socket" << endl;

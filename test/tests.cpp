@@ -1,13 +1,9 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <Location.h>
-#include <Map.h>
-#include <Money.h>
-#include <UnitFactory.h>
-#include <WaterUnitFactory.h>
-#include <FireUnitFactory.h>
-#include <AirUnitFactory.h>
-#include "EarthUnitFactory.h"
+#include "Location.h"
+#include "Map.h"
+#include "Money.h"
+#include "UnitFactory.h"
 #include "GameSocket.h"
 
 using std::cin;
@@ -29,7 +25,7 @@ TEST(GameSocket, server) {
     delete sd;
 }
 
-TEST(GameSocket, clien) {
+TEST(GameSocket, client) {
 
     string s;
     getline(cin, s);
@@ -141,7 +137,7 @@ TEST(WaterFactory, add) {
 
     Map map;
 
-    UnitFactory* factory = new WaterUnitFactory(Player::Me, map, money);
+    UnitFactory* factory = new UnitFactory(Player::Me, map, money, Race::Water);
 
     City new_city = City(Location(5,6));
 
@@ -463,7 +459,7 @@ TEST(EarthFactory, add) {
 
     Map map;
 
-    UnitFactory* factory = new EarthUnitFactory(Player::Me, map, money);
+    UnitFactory* factory = new UnitFactory(Player::Me, map, money, Race::Earth);
 
     City new_city = City(Location(5,6));
 
@@ -785,7 +781,7 @@ TEST(AirFactory, add) {
 
     Map map;
 
-    UnitFactory* factory = new AirUnitFactory(Player::Me, map, money);
+    UnitFactory* factory = new UnitFactory(Player::Me, map, money, Race::Air);
 
     City new_city = City(Location(5,6));
 
@@ -1107,7 +1103,7 @@ TEST(FireFactory, add) {
 
     Map map;
 
-    UnitFactory* factory = new FireUnitFactory(Player::Me, map, money);
+    UnitFactory* factory = new UnitFactory(Player::Me, map, money, Race::Fire);
 
     City new_city = City(Location(5,6));
 

@@ -24,15 +24,15 @@ public:
     std::vector<Worker*> list_worker;
 
     UnitFactory(Player which, Map& map, Money& money, Race race);
-    virtual ~UnitFactory();
+    ~UnitFactory();
 
-    virtual void AddWarrior(City& where) = 0;
-    virtual void AddArcher(City& where) = 0;
-    virtual void AddWizard(City& where) = 0;
-    virtual void AddColonist(City& where);
-    virtual void AddWorker(City& where);
+    void AddWarrior(City& where);
+    void AddArcher(City& where);
+    void AddWizard(City& where);
+    void AddColonist(City& where);
+    void AddWorker(City& where);
 
-    virtual std::string Info();
+    std::string Info();
 };
 
 
