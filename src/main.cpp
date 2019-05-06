@@ -13,11 +13,18 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+int Game();
+
 int main(int argv, char* args[]) {
 #ifdef DEBUG
     ::testing::InitGoogleTest();
     return RUN_ALL_TESTS();
 #endif
+
+    return Game();
+}
+
+int Game() {
 
     Player which_turn = Player::Me;
 
@@ -37,7 +44,8 @@ int main(int argv, char* args[]) {
 
         socket = new GameSocket(port);
 
-    } else if(user_answer == 'C' || user_answer == 'c') {
+    }
+    else if(user_answer == 'C' || user_answer == 'c') {
 
         cout << "Choose host:" << endl;
 
@@ -57,12 +65,13 @@ int main(int argv, char* args[]) {
 
         which_turn = Player::Opponent;
 
-    } else {
+    }
+    else {
         cout << "Wrong answer. Answer might be 'S' or 'C'" << endl;
         return 0;
     }
 
-    Map map;
+    auto map = new Map();
 
     Money money;
 
@@ -72,32 +81,37 @@ int main(int argv, char* args[]) {
 
     string user_race;
 
-    UnitFactory* my_factory = nullptr;
+    Race user_race_enum;
 
-    while(my_factory == nullptr) {
+    while(string_to_send.empty()) {
 
         cin >> user_race;
 
         if (user_race == "Water" || user_race == "water" || user_race == "W" || user_race == "w") {
-            my_factory = new UnitFactory(Player::Me, map, money, Race::Water);
+            user_race_enum = Race::Water;
             string_to_send = "w";
-        } else
+        }
+        else
         if (user_race == "Air" || user_race == "air" || user_race == "A" || user_race == "a") {
-            my_factory = new UnitFactory(Player::Me, map, money, Race::Air);
+            user_race_enum = Race::Air;
             string_to_send = "a";
-        } else
+        }
+        else
         if (user_race == "Earth" || user_race == "earth" || user_race == "E" || user_race == "e") {
-            my_factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+            user_race_enum = Race::Earth;
             string_to_send = "e";
-        } else
+        }
+        else
         if (user_race == "Fire" || user_race == "fire" || user_race == "F" || user_race == "f") {
-            my_factory = new UnitFactory(Player::Me, map, money, Race::Fire);
+            user_race_enum = Race::Fire;
             string_to_send = "f";
-        } else {
+        }
+        else {
             cout << "It is not an exist race. Type one of the exist: Water, Fire, Earth, Air." << endl;
         }
-
     }
+
+    auto my_factory = new UnitFactory(Player::Me, map, money, user_race_enum);
 
     cout << my_factory->Info() << endl;
 
@@ -106,29 +120,27 @@ int main(int argv, char* args[]) {
     if(which_turn == Player::Me) {
         socket->Write(string_to_send);
         opponent_race = socket->Read();
-    } else {
+    }
+    else {
         opponent_race = socket->Read();
         socket->Write(string_to_send);
     }
 
-    UnitFactory* opponent_factory = nullptr;
+    Race opponent_race_enum;
 
     if (opponent_race == "w") {
-        opponent_factory = new UnitFactory(Player::Opponent, map, money, Race::Water);
-        string_to_send = "w";
-    } else
-    if (opponent_race == "a") {
-        opponent_factory = new UnitFactory(Player::Opponent, map, money, Race::Air);
-        string_to_send = "a";
-    } else
-    if (opponent_race == "e") {
-        opponent_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
-        string_to_send = "e";
-    } else
-    if (opponent_race == "f") {
-        opponent_factory = new UnitFactory(Player::Opponent, map, money, Race::Fire);
-        string_to_send = "f";
-    } else {
+        opponent_race_enum = Race::Water;
+    }
+    else if (opponent_race == "a") {
+        opponent_race_enum = Race::Air;
+    }
+    else if (opponent_race == "e") {
+        opponent_race_enum = Race::Earth;
+    }
+    else if (opponent_race == "f") {
+        opponent_race_enum = Race::Fire;
+    }
+    else {
         cout << "Something wrong with socket" << endl;
 
         delete my_factory;
@@ -136,19 +148,19 @@ int main(int argv, char* args[]) {
 
         return 0;
     }
-    
+
+    auto opponent_factory = new UnitFactory(Player::Opponent, map, money, opponent_race_enum);
+
     cout << opponent_factory->Info() << endl;
 
-    CityFactory* my_city_factory = new CityFactory(Player::Me);
-    CityFactory* opponent_city_factory = new CityFactory(Player::Opponent);
+    auto my_city_factory = new CityFactory(Player::Me, map);
+    auto opponent_city_factory = new CityFactory(Player::Opponent, map);
 
     cout << my_city_factory->Info() << endl;
     cout << opponent_city_factory->Info() << endl;
 
-    //TODO: generation 0f resources
+    //TODO: generation of resources
 
-
-    
 
 //delete part
 

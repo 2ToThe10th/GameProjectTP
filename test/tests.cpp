@@ -53,7 +53,7 @@ TEST(Location, Direction) {
 }
 
 TEST(Map, Constructor) {
-    Map map;
+    auto map = new Map();
 
     const int MAX_HEIGHT = 20;
     const int MAX_WIDTH = 20;
@@ -91,11 +91,11 @@ TEST(Map, Constructor) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
-    EXPECT_EQ(map.colonist(Location(3,4)), nullptr);
-    EXPECT_EQ(map.combat(Location(5,6)), nullptr);
-    EXPECT_EQ(map.worker(Location(7,8)), nullptr);
+    EXPECT_EQ(map->colonist(Location(3,4)), nullptr);
+    EXPECT_EQ(map->combat(Location(5,6)), nullptr);
+    EXPECT_EQ(map->worker(Location(7,8)), nullptr);
 
 }
 
@@ -135,9 +135,9 @@ TEST(WaterFactory, add) {
 
     Money money;
 
-    Map map;
+    auto map = new Map();
 
-    UnitFactory* factory = new UnitFactory(Player::Me, map, money, Race::Water);
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Water);
 
     City new_city = City(Location(5,6));
 
@@ -189,7 +189,7 @@ TEST(WaterFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Worker
 
@@ -248,7 +248,7 @@ TEST(WaterFactory, add) {
 
     //cout << sample << endl;
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Warrior
 
@@ -303,7 +303,7 @@ TEST(WaterFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Archer
 
@@ -379,7 +379,7 @@ TEST(WaterFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Wizard
 
@@ -448,7 +448,7 @@ TEST(WaterFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     delete factory;
 }
@@ -457,9 +457,9 @@ TEST(EarthFactory, add) {
 
     Money money;
 
-    Map map;
+    auto map = new Map();
 
-    UnitFactory* factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
 
     City new_city = City(Location(5,6));
 
@@ -511,7 +511,7 @@ TEST(EarthFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Worker
 
@@ -570,7 +570,7 @@ TEST(EarthFactory, add) {
 
     //cout << sample << endl;
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Warrior
 
@@ -625,7 +625,7 @@ TEST(EarthFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Archer
 
@@ -701,7 +701,7 @@ TEST(EarthFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Wizard
 
@@ -770,7 +770,7 @@ TEST(EarthFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     delete factory;
 }
@@ -779,9 +779,9 @@ TEST(AirFactory, add) {
 
     Money money;
 
-    Map map;
+    auto map = new Map();
 
-    UnitFactory* factory = new UnitFactory(Player::Me, map, money, Race::Air);
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Air);
 
     City new_city = City(Location(5,6));
 
@@ -833,7 +833,7 @@ TEST(AirFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Worker
 
@@ -892,7 +892,7 @@ TEST(AirFactory, add) {
 
     //cout << sample << endl;
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Warrior
 
@@ -947,7 +947,7 @@ TEST(AirFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Archer
 
@@ -1023,7 +1023,7 @@ TEST(AirFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Wizard
 
@@ -1092,7 +1092,7 @@ TEST(AirFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     delete factory;
 }
@@ -1101,9 +1101,9 @@ TEST(FireFactory, add) {
 
     Money money;
 
-    Map map;
+    auto map = new Map();
 
-    UnitFactory* factory = new UnitFactory(Player::Me, map, money, Race::Fire);
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Fire);
 
     City new_city = City(Location(5,6));
 
@@ -1155,7 +1155,7 @@ TEST(FireFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Worker
 
@@ -1214,7 +1214,7 @@ TEST(FireFactory, add) {
 
     //cout << sample << endl;
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Warrior
 
@@ -1269,7 +1269,7 @@ TEST(FireFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Archer
 
@@ -1345,7 +1345,7 @@ TEST(FireFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     //test Wizard
 
@@ -1414,7 +1414,7 @@ TEST(FireFactory, add) {
         }
     }
 
-    EXPECT_EQ(map.Info(), sample);
+    EXPECT_EQ(map->Info(), sample);
 
     delete factory;
 }

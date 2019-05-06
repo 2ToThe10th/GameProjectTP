@@ -4,7 +4,7 @@
 using std::string;
 
 
-CityFactory::CityFactory(Player which): which_city_factory(which) {}
+CityFactory::CityFactory(Player which, Map* map): which_city_factory(which), map(map) {}
 
 
 string CityFactory::Info() {

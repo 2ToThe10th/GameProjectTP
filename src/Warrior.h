@@ -9,7 +9,7 @@ public:
     static const int cost_iron = 50;
     static const int cost_gold = 10;
 
-    explicit Warrior(Player which, Race race, int health, Location city_location, Map& map, int damage);
+    explicit Warrior(Player which, Race race, int health, Location city_location, Map*& map, int damage);
 
     ~Warrior() override = default;
 

@@ -10,11 +10,12 @@
 class CityFactory {
 private:
     Player which_city_factory;
+    Map* map;
 
 public:
     std::vector<City> cities;
 
-    CityFactory(Player which);
+    CityFactory(Player which, Map* map);
 
     void AddCity(Colonist colonist);
 
