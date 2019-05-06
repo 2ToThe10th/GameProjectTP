@@ -5,6 +5,7 @@
 #include "Enums.h"
 #include "Location.h"
 
+class UnitFactory;
 class Map;
 
 class Unit {
@@ -15,10 +16,13 @@ protected:
     bool already_move = true;
     bool frozen = false;
     Map* map;
-    const Race race;
-    const Player which;
 public:
-    explicit Unit(Player which, Race race, int health, Location city_location, Map* map);
+    Player which;
+    unsigned int id;
+    static UnitFactory* my_unit_factory;
+    static UnitFactory* opponent_unit_factory;
+    const Race race;
+    explicit Unit(Player which, Race race, int health, Location city_location, Map *map, unsigned int id);
     virtual ~Unit() = default;
 
     virtual std::string Info();

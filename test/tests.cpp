@@ -102,7 +102,7 @@ TEST(Map, Constructor) {
 
 TEST(CityFactory, AddCity) {
     auto map = new Map();
-    auto colonist = new Colonist(Player::Me, Race::Fire, 100, Location(2,2), map);
+    auto colonist = new Colonist(Player::Me, Race::Fire, 100, Location(2,2), map, 0);
     auto city_factory = new CityFactory(Player::Me, map);
 
     EXPECT_EQ(city_factory->cities.size(), 0);
@@ -184,6 +184,22 @@ TEST(Colonist, Go) {
 
     colonist->Go(Direction::Down);
     EXPECT_EQ(map->colonist(location), colonist);
+
+    factory->AddWarrior(new City(location.Direction(Direction::Up)));
+
+    colonist->Go(Direction::Up);
+    EXPECT_EQ(map->colonist(location), nullptr);
+    location = location.Direction(Direction::Up);
+    EXPECT_EQ(map->colonist(location), colonist);
+
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
+
+    enemy_factory->AddWarrior(new City(location.Direction(Direction::Up)));
+
+    colonist->Go(Direction::Up);
+    EXPECT_EQ(map->colonist(location), colonist);
+    location = location.Direction(Direction::Up);
+    EXPECT_EQ(map->colonist(location), nullptr);
 }
 
 TEST(Worker, Go) {
@@ -221,6 +237,23 @@ TEST(Worker, Go) {
 
     worker->Go(Direction::Down);
     EXPECT_EQ(map->worker(location), worker);
+
+
+    factory->AddWarrior(new City(location.Direction(Direction::Up)));
+
+    worker->Go(Direction::Up);
+    EXPECT_EQ(map->worker(location), nullptr);
+    location = location.Direction(Direction::Up);
+    EXPECT_EQ(map->worker(location), worker);
+
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
+
+    enemy_factory->AddWarrior(new City(location.Direction(Direction::Up)));
+
+    worker->Go(Direction::Up);
+    EXPECT_EQ(map->worker(location), worker);
+    location = location.Direction(Direction::Up);
+    EXPECT_EQ(map->worker(location), nullptr);
 }
 
 TEST(CombatUnit, Go) {
@@ -228,6 +261,8 @@ TEST(CombatUnit, Go) {
     money.Add(700, 500 , 200);
     auto map = new Map();
     auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+
+    Unit::my_unit_factory = factory;
 
     Location location(1, 5);
 
@@ -263,6 +298,37 @@ TEST(CombatUnit, Go) {
 
     combat->Go(Direction::Down);
     EXPECT_EQ(map->combat(location), combat);
+
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
+    Unit::opponent_unit_factory = enemy_factory;
+    enemy_factory->AddColonist(new City(location.Direction(Direction::Up)));
+
+    combat->Go(Direction::Up);
+    EXPECT_EQ(map->combat(location), nullptr);
+    location = location.Direction(Direction::Up);
+    EXPECT_EQ(map->combat(location), combat);
+
+    EXPECT_EQ(enemy_factory->list_colonist.size(), 1);
+    EXPECT_EQ(enemy_factory->list_colonist[0], nullptr);
+    EXPECT_EQ(factory->list_colonist.size(), 1);
+    EXPECT_EQ(factory->list_colonist[0]->which, Player::Me);
+    
+    location = Location(12,15);
+    
+    enemy_factory->AddWarrior(new City(location));
+    factory->AddWorker(new City(location.Direction(Direction::Up)));
+
+    combat = map->combat(location);
+    
+    combat->Go(Direction::Up);
+    EXPECT_EQ(map->combat(location), nullptr);
+    location = location.Direction(Direction::Up);
+    EXPECT_EQ(map->combat(location), combat);
+
+    EXPECT_EQ(factory->list_worker.size(), 1);
+    EXPECT_EQ(factory->list_worker[0], nullptr);
+    EXPECT_EQ(enemy_factory->list_worker.size(), 1);
+    EXPECT_EQ(enemy_factory->list_worker[0]->which, Player::Opponent);
 }
 
 TEST(WaterFactory, add) {
@@ -281,7 +347,7 @@ TEST(WaterFactory, add) {
 
     EXPECT_EQ(factory->list_colonist.size(), 1);
 
-    EXPECT_EQ(factory->list_colonist[0]->Info(), "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0");
+    EXPECT_EQ(factory->list_colonist[0]->Info(), "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0");
 
     const int MAX_HEIGHT = 20;
     const int MAX_WIDTH = 20;
@@ -300,7 +366,7 @@ TEST(WaterFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -337,7 +403,7 @@ TEST(WaterFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 1);
 
-    EXPECT_EQ(factory->list_worker[0]->Info(), "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0");
+    EXPECT_EQ(factory->list_worker[0]->Info(), "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0");
 
     sample = "";
     sample += "Combat\n";
@@ -353,7 +419,7 @@ TEST(WaterFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -365,7 +431,7 @@ TEST(WaterFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -410,7 +476,7 @@ TEST(WaterFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -422,7 +488,7 @@ TEST(WaterFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -486,7 +552,7 @@ TEST(WaterFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -498,7 +564,7 @@ TEST(WaterFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -555,7 +621,7 @@ TEST(WaterFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -567,7 +633,7 @@ TEST(WaterFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -603,7 +669,7 @@ TEST(EarthFactory, add) {
 
     EXPECT_EQ(factory->list_colonist.size(), 1);
 
-    EXPECT_EQ(factory->list_colonist[0]->Info(), "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0");
+    EXPECT_EQ(factory->list_colonist[0]->Info(), "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0");
 
     const int MAX_HEIGHT = 20;
     const int MAX_WIDTH = 20;
@@ -622,7 +688,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -659,7 +725,7 @@ TEST(EarthFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 1);
 
-    EXPECT_EQ(factory->list_worker[0]->Info(), "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0");
+    EXPECT_EQ(factory->list_worker[0]->Info(), "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0");
 
     sample = "";
     sample += "Combat\n";
@@ -675,7 +741,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -687,7 +753,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -732,7 +798,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -744,7 +810,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -808,7 +874,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -820,7 +886,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -877,7 +943,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -889,7 +955,7 @@ TEST(EarthFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -925,7 +991,7 @@ TEST(AirFactory, add) {
 
     EXPECT_EQ(factory->list_colonist.size(), 1);
 
-    EXPECT_EQ(factory->list_colonist[0]->Info(), "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0");
+    EXPECT_EQ(factory->list_colonist[0]->Info(), "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0");
 
     const int MAX_HEIGHT = 20;
     const int MAX_WIDTH = 20;
@@ -944,7 +1010,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -981,7 +1047,7 @@ TEST(AirFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 1);
 
-    EXPECT_EQ(factory->list_worker[0]->Info(), "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0");
+    EXPECT_EQ(factory->list_worker[0]->Info(), "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0");
 
     sample = "";
     sample += "Combat\n";
@@ -997,7 +1063,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1009,7 +1075,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1054,7 +1120,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1066,7 +1132,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1130,7 +1196,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1142,7 +1208,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1199,7 +1265,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1211,7 +1277,7 @@ TEST(AirFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1247,7 +1313,7 @@ TEST(FireFactory, add) {
 
     EXPECT_EQ(factory->list_colonist.size(), 1);
 
-    EXPECT_EQ(factory->list_colonist[0]->Info(), "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0");
+    EXPECT_EQ(factory->list_colonist[0]->Info(), "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0");
 
     const int MAX_HEIGHT = 20;
     const int MAX_WIDTH = 20;
@@ -1266,7 +1332,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1303,7 +1369,7 @@ TEST(FireFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 1);
 
-    EXPECT_EQ(factory->list_worker[0]->Info(), "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0");
+    EXPECT_EQ(factory->list_worker[0]->Info(), "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0");
 
     sample = "";
     sample += "Combat\n";
@@ -1319,7 +1385,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1331,7 +1397,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1376,7 +1442,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1388,7 +1454,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1452,7 +1518,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1464,7 +1530,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1521,7 +1587,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if (i == 5 && j == 6) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 50 of MAX_HEALTH: 50 location:  x:5 y:6 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Colonist health: 1 of MAX_HEALTH: 1 location:  x:5 y:6 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1533,7 +1599,7 @@ TEST(FireFactory, add) {
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j =0; j < MAX_WIDTH; ++j) {
             if(i == 7 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 25 of MAX_HEALTH: 25 location:  x:7 y:8 already_move: 1 frozen: 0\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Worker health: 1 of MAX_HEALTH: 1 location:  x:7 y:8 already_move: 1 frozen: 0\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }

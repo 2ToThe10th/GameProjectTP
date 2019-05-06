@@ -36,4 +36,16 @@ public:
 };
 
 
+template <typename T>
+unsigned int PlaceToInsert(std::vector<T> &list_of_unit) {
+    unsigned int list_size = list_of_unit.size();
+    for(unsigned int i = 0; i < list_size; ++i) {
+        if(list_of_unit[i] == nullptr) {
+            return i;
+        }
+    }
+    list_of_unit.push_back(nullptr);
+    return list_size;
+}
+
 #endif //GAME_UNITFACTORY_H

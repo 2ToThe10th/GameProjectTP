@@ -55,7 +55,6 @@ UnitFactory::~UnitFactory() {
     }
 }
 
-
 void UnitFactory::AddWarrior(City* where) {
     if(map->combat(where->location) != nullptr) {
         cout << "Other combat unit is already there" << endl;
@@ -91,9 +90,13 @@ void UnitFactory::AddWarrior(City* where) {
             break;
     }
 
-    list_combat_unit.push_back(new Warrior(which, race, health, where->location, map, damage));
+    unsigned int id = PlaceToInsert<CombatUnit*>(list_combat_unit);
 
-    map->combat(where->location) = list_combat_unit.back();
+    auto new_warrior = new Warrior(which, race, health, where->location, map, damage, id);
+
+    list_combat_unit[id] = new_warrior;
+
+    map->combat(where->location) = new_warrior;
 
     //TODO: send message about building unit to opponent
 }
@@ -138,9 +141,14 @@ void UnitFactory::AddArcher(City* where) {
             break;
     }
 
-    list_combat_unit.push_back(new Archer(which, race, health, where->location, map, damage));
 
-    map->combat(where->location) = list_combat_unit.back();
+    unsigned int id = PlaceToInsert<CombatUnit*>(list_combat_unit);
+
+    auto new_archer = new Archer(which, race, health, where->location, map, damage, id);
+
+    list_combat_unit[id] = new_archer;
+
+    map->combat(where->location) = new_archer;
 
     //TODO: send message about building unit to opponent
 }
@@ -185,9 +193,13 @@ void UnitFactory::AddWizard(City* where) {
             break;
     }
 
-    list_combat_unit.push_back(new Wizard(which, race, health, where->location, map, damage));
+    unsigned int id = PlaceToInsert<CombatUnit*>(list_combat_unit);
 
-    map->combat(where->location) = list_combat_unit.back();
+    auto new_wizard = new Wizard(which, race, health, where->location, map, damage, id);
+
+    list_combat_unit[id] = new_wizard;
+
+    map->combat(where->location) = new_wizard;
 
     //TODO: send message about building unit to opponent
 }
@@ -205,9 +217,13 @@ void UnitFactory::AddColonist(City* where) {
         return;
     }
 
-    list_colonist.push_back(new Colonist(which, race, 50, where->location, map));
+    unsigned int id = PlaceToInsert<Colonist*>(list_colonist);
 
-    map->colonist(where->location) = list_colonist.back();
+    auto new_colonist = new Colonist(which, race, 1, where->location, map, id);
+
+    list_colonist[id] = new_colonist;
+
+    map->colonist(where->location) = new_colonist;
 
     //TODO: send message about building unit to opponent
 }
@@ -225,9 +241,13 @@ void UnitFactory::AddWorker(City* where) {
         return;
     }
 
-    list_worker.push_back(new Worker(which, race, 25, where->location, map));
+    unsigned int id = PlaceToInsert<Worker*>(list_worker);
+    
+    auto new_worker = new Worker(which, race, 1, where->location, map, id);
 
-    map->worker(where->location) = list_worker.back();
+    list_worker[id] = new_worker;
+
+    map->worker(where->location) = new_worker;
 
     //TODO: send message about building unit to opponent
 }

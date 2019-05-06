@@ -9,14 +9,12 @@ public:
     static const int cost_iron = 50;
     static const int cost_gold = 10;
 
-    explicit Warrior(Player which, Race race, int health, Location city_location, Map* map, int damage);
+    explicit Warrior(Player which, Race race, int health, Location city_location, Map* map, int damage, unsigned int id);
 
     ~Warrior() override = default;
 
     std::string Info() override;
-
-    //TODO:
-    //virtual void Attack(int x_to, int y_to) = 0;
+    void Attack(Location where_attack) override {};
 };
 
 

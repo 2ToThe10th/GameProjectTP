@@ -153,6 +153,9 @@ int Game() {
 
     cout << opponent_factory->Info() << endl;
 
+    Unit::my_unit_factory = my_factory;
+    Unit::opponent_unit_factory = opponent_factory;
+
     auto my_city_factory = new CityFactory(Player::Me, map);
     auto opponent_city_factory = new CityFactory(Player::Opponent, map);
 
