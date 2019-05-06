@@ -13,11 +13,11 @@ private:
     Map* map;
 
 public:
-    std::vector<City> cities;
+    std::vector<City*> cities;
 
     CityFactory(Player which, Map* map);
 
-    void AddCity(Colonist colonist);
+    void AddCity(const Colonist* colonist);
 
     std::string Info();
 };

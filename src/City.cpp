@@ -7,7 +7,7 @@ using std::endl;
 City::City(Location location): location(location) {}
 
 
-void City::BuildArcherTower(Money &money) {
+void City::BuildArcherTower(Money& money) {
     if(exist_archer_tower) {
         cout << "Archer Town is already exist" << endl;
         return;
@@ -21,7 +21,7 @@ void City::BuildArcherTower(Money &money) {
     exist_archer_tower = true;
 }
 
-void City::BuildWizardTower(Money &money) {
+void City::BuildWizardTower(Money& money) {
     if(!exist_archer_tower) {
         cout << "Archer Town isn't already exist. Build Archer Town to be able to Build Wizard Town" << endl;
         return;

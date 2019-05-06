@@ -8,6 +8,10 @@ std::string Unit::Info() {
            " already_move: " + to_string(already_move) + " frozen: " + to_string(frozen);
 }
 
-Unit::Unit(Player which, Race race, int health, Location city_location, Map*& map):
+Unit::Unit(Player which, Race race, int health, Location city_location, Map* map):
            MAX_HEALTH(health), health(health), location(city_location), map(map), race(race), which(which) {}
+
+Location Unit::GetLocation() const {
+    return location;
+}
 

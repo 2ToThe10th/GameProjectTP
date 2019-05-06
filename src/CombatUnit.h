@@ -8,7 +8,7 @@ class CombatUnit: public Unit {
 private:
     int damage;
 public:
-    explicit CombatUnit(Player which, Race race, int health, Location city_location, Map*& map, int damage);
+    explicit CombatUnit(Player which, Race race, int health, Location city_location, Map* map, int damage);
     ~CombatUnit() override = default;
 
     std::string Info();

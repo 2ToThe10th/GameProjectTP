@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <CityFactory.h>
 #include "Location.h"
 #include "Map.h"
 #include "Money.h"
@@ -97,6 +98,23 @@ TEST(Map, Constructor) {
     EXPECT_EQ(map->combat(Location(5,6)), nullptr);
     EXPECT_EQ(map->worker(Location(7,8)), nullptr);
 
+}
+
+TEST(CityFactory, AddCity) {
+    auto map = new Map();
+    auto colonist = new Colonist(Player::Me, Race::Fire, 100, Location(0,0), map);
+    auto city_factory = new CityFactory(Player::Me, map);
+
+    EXPECT_EQ(city_factory->cities.size(), 0);
+
+    city_factory->AddCity(colonist);
+    EXPECT_EQ(city_factory->cities.size(), 1);
+
+    city_factory->AddCity(colonist);
+    EXPECT_EQ(city_factory->cities.size(), 1);
+
+    city_factory->AddCity(nullptr);
+    EXPECT_EQ(city_factory->cities.size(), 1);
 }
 
 TEST(Money, Add_Take) {

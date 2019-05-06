@@ -1,5 +1,7 @@
-#include "CityFactory.h"
 #include <string>
+#include <iostream>
+#include "CityFactory.h"
+#include "Map.h"
 
 using std::string;
 
@@ -21,6 +23,18 @@ string CityFactory::Info() {
     return str_which + " City";
 }
 
-void CityFactory::AddCity(Colonist colonist) {
+void CityFactory::AddCity(const Colonist* colonist) {
 
+    if(colonist == nullptr) {
+        std::cout << "This colonist is already die. Please, choose another one" << std::endl;
+        return;
+    }
+
+    if(map->city(colonist->GetLocation()) != nullptr) {
+        std::cout << "Colonist now in the city. Please, move him." << std::endl;
+        return;
+    }
+
+    cities.push_back(new City(colonist->GetLocation()));
+    map->city(colonist->GetLocation()) = cities.back();
 }

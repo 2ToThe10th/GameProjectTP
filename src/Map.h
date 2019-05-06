@@ -1,7 +1,6 @@
 #ifndef GAME_MAP_H
 #define GAME_MAP_H
 
-
 #include <string>
 #include "CombatUnit.h"
 #include "Colonist.h"

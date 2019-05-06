@@ -9,7 +9,7 @@ public:
     static const int cost_iron = 50;
     static const int cost_gold = 0;
     
-    explicit Colonist(Player which, Race race, int health, Location city_location, Map*& map);
+    explicit Colonist(Player which, Race race, int health, Location city_location, Map* map);
     ~Colonist() override = default;
     
     std::string Info() override;

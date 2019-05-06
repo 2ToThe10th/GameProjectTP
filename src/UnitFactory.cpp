@@ -38,7 +38,7 @@ std::string UnitFactory::Info() {
     return "";
 }
 
-UnitFactory::UnitFactory(enum::Player which, Map*& map, Money& money, Race race): which(which), map(map), money(money), race(race) {}
+UnitFactory::UnitFactory(enum::Player which, Map* map, Money& money, Race race): which(which), map(map), money(money), race(race) {}
 
 UnitFactory::~UnitFactory() {
     for(CombatUnit* i: list_combat_unit) {

@@ -14,16 +14,17 @@ private:
     Location location;
     bool already_move = true;
     bool frozen = false;
-    Map*& map;
+    Map* map;
     const Race race;
     const Player which;
 public:
-    explicit Unit(Player which, Race race, int health, Location city_location, Map*& map);
+    explicit Unit(Player which, Race race, int health, Location city_location, Map* map);
     virtual ~Unit() = default;
 
     virtual std::string Info();
     //virtual void Go(Direction where);
 
+    Location GetLocation() const;
 };
 
 

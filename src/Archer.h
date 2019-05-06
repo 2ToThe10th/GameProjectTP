@@ -9,7 +9,7 @@ public:
     static const int cost_iron = 50;
     static const int cost_gold = 20;
 
-    explicit Archer(Player which, Race race, int health, Location city_location, Map*& map, int damage);
+    explicit Archer(Player which, Race race, int health, Location city_location, Map* map, int damage);
     ~Archer() override = default;
 
     std::string Info() override;

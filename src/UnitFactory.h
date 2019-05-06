@@ -15,7 +15,7 @@
 class UnitFactory {
 protected:
     Player which;
-    Map*& map;
+    Map* map;
     Money& money;
     Race race;
 public:
@@ -23,7 +23,7 @@ public:
     std::vector<Colonist*> list_colonist;
     std::vector<Worker*> list_worker;
 
-    UnitFactory(Player which, Map*& map, Money& money, Race race);
+    UnitFactory(Player which, Map* map, Money& money, Race race);
     ~UnitFactory();
 
     void AddWarrior(City& where);
