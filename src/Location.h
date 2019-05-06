@@ -5,6 +5,8 @@
 #include <string>
 #include "Enums.h"
 
+class Map;
+
 class Location {
 public:
     int x;
@@ -15,6 +17,7 @@ public:
     const bool operator== (const Location& other_location) const;
 
     Location Direction(Direction where);
+    bool IsOnField();
 
     std::string Info();
 };

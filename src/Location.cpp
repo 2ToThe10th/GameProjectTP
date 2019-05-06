@@ -1,5 +1,6 @@
 #include "Location.h"
 #include "Enums.h"
+#include "Map.h"
 
 Location::Location(int x, int y): x(x), y(y) {}
 
@@ -42,4 +43,8 @@ const bool Location::operator==(const Location &other_location) const {
 
 std::string Location::Info() {
     return " x:" + std::to_string(x) + " y:" + std::to_string(y);
+}
+
+bool Location::IsOnField() {
+    return !(x <= 0 || x > Map::MAX_HEIGHT || y <= 0 || y > Map::MAX_WIDTH);
 }

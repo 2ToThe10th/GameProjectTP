@@ -14,7 +14,7 @@ public:
     std::string Info();
 
     //TODO:
-    //void Go(Direction where) override;
+    void Go(Direction where) override;
     //virtual void Attack(int x_to, int y_to) = 0;
 };
 

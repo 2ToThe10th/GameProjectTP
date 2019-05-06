@@ -56,10 +56,10 @@ UnitFactory::~UnitFactory() {
 }
 
 
-void UnitFactory::AddWarrior(City &where) {
-    if(map->combat(where.location) != nullptr) {
+void UnitFactory::AddWarrior(City* where) {
+    if(map->combat(where->location) != nullptr) {
         cout << "Other combat unit is already there" << endl;
-        cout << map->combat(where.location)->Info() << endl;
+        cout << map->combat(where->location)->Info() << endl;
         return;
     }
 
@@ -91,21 +91,21 @@ void UnitFactory::AddWarrior(City &where) {
             break;
     }
 
-    list_combat_unit.push_back(new Warrior(which, race, health, where.location, map, damage));
+    list_combat_unit.push_back(new Warrior(which, race, health, where->location, map, damage));
 
-    map->combat(where.location) = list_combat_unit.back();
+    map->combat(where->location) = list_combat_unit.back();
 
     //TODO: send message about building unit to opponent
 }
 
-void UnitFactory::AddArcher(City &where) {
-    if(map->combat(where.location) != nullptr) {
+void UnitFactory::AddArcher(City* where) {
+    if(map->combat(where->location) != nullptr) {
         cout << "Other combat unit is already there" << endl;
-        cout << map->combat(where.location)->Info() << endl;
+        cout << map->combat(where->location)->Info() << endl;
         return;
     }
 
-    if(!where.IsArcherTowerExist()) {
+    if(!where->IsArcherTowerExist()) {
         cout << "Build Archer Town first" << endl;
         return;
     }
@@ -138,21 +138,21 @@ void UnitFactory::AddArcher(City &where) {
             break;
     }
 
-    list_combat_unit.push_back(new Archer(which, race, health, where.location, map, damage));
+    list_combat_unit.push_back(new Archer(which, race, health, where->location, map, damage));
 
-    map->combat(where.location) = list_combat_unit.back();
+    map->combat(where->location) = list_combat_unit.back();
 
     //TODO: send message about building unit to opponent
 }
 
-void UnitFactory::AddWizard(City &where) {
-    if(map->combat(where.location) != nullptr) {
+void UnitFactory::AddWizard(City* where) {
+    if(map->combat(where->location) != nullptr) {
         cout << "Other combat unit is already there" << endl;
-        cout << map->combat(where.location)->Info() << endl;
+        cout << map->combat(where->location)->Info() << endl;
         return;
     }
 
-    if(!where.IsWizardTowerExist()) {
+    if(!where->IsWizardTowerExist()) {
         cout << "Build Wizard Town first" << endl;
         return;
     }
@@ -185,16 +185,16 @@ void UnitFactory::AddWizard(City &where) {
             break;
     }
 
-    list_combat_unit.push_back(new Wizard(which, race, health, where.location, map, damage));
+    list_combat_unit.push_back(new Wizard(which, race, health, where->location, map, damage));
 
-    map->combat(where.location) = list_combat_unit.back();
+    map->combat(where->location) = list_combat_unit.back();
 
     //TODO: send message about building unit to opponent
 }
 
 
-void UnitFactory::AddColonist(City& where) {
-    if(map->colonist(where.location) != nullptr || map->worker(where.location) != nullptr) {
+void UnitFactory::AddColonist(City* where) {
+    if(map->colonist(where->location) != nullptr || map->worker(where->location) != nullptr) {
         cout << "Other military unit is already there" << endl;
         return;
     }
@@ -205,16 +205,16 @@ void UnitFactory::AddColonist(City& where) {
         return;
     }
 
-    list_colonist.push_back(new Colonist(which, race, 50, where.location, map));
+    list_colonist.push_back(new Colonist(which, race, 50, where->location, map));
 
-    map->colonist(where.location) = list_colonist.back();
+    map->colonist(where->location) = list_colonist.back();
 
     //TODO: send message about building unit to opponent
 }
 
-void UnitFactory::AddWorker(City &where) {
+void UnitFactory::AddWorker(City* where) {
 
-    if(map->colonist(where.location) != nullptr || map->worker(where.location) != nullptr) {
+    if(map->colonist(where->location) != nullptr || map->worker(where->location) != nullptr) {
         cout << "Other military unit is already there" << endl;
         return;
     }
@@ -225,9 +225,9 @@ void UnitFactory::AddWorker(City &where) {
         return;
     }
 
-    list_worker.push_back(new Worker(which, race, 25, where.location, map));
+    list_worker.push_back(new Worker(which, race, 25, where->location, map));
 
-    map->worker(where.location) = list_worker.back();
+    map->worker(where->location) = list_worker.back();
 
     //TODO: send message about building unit to opponent
 }

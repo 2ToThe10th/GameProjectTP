@@ -13,8 +13,7 @@ public:
     ~Colonist() override = default;
     
     std::string Info() override;
-    //TODO:
-    //void Go(Direction where) override;
+    void Go(Direction where) override;
 };
 
 

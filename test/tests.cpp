@@ -102,7 +102,7 @@ TEST(Map, Constructor) {
 
 TEST(CityFactory, AddCity) {
     auto map = new Map();
-    auto colonist = new Colonist(Player::Me, Race::Fire, 100, Location(0,0), map);
+    auto colonist = new Colonist(Player::Me, Race::Fire, 100, Location(2,2), map);
     auto city_factory = new CityFactory(Player::Me, map);
 
     EXPECT_EQ(city_factory->cities.size(), 0);
@@ -149,6 +149,122 @@ TEST(Money, Add_Take) {
     EXPECT_EQ(money.Info(), "Wood:0 Iron:0 Gold:0");
 }
 
+TEST(Colonist, Go) {
+    Money money;
+    money.Add(150, 50 , 0);
+    auto map = new Map();
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+
+    Location location(1, 5);
+
+    factory->AddColonist(new City(location));
+    EXPECT_NE(map->colonist(location), nullptr);
+
+    auto colonist = map->colonist(location);
+
+    colonist->Go(Direction::Up);
+    EXPECT_EQ(map->colonist(location), nullptr);
+    location = location.Direction(Direction::Up);
+    EXPECT_EQ(map->colonist(location), colonist);
+
+    colonist->Go(Direction::Left);
+    EXPECT_EQ(map->colonist(location), nullptr);
+    location = location.Direction(Direction::Left);
+    EXPECT_EQ(map->colonist(location), colonist);
+
+    colonist->Go(Direction::Right);
+    EXPECT_EQ(map->colonist(location), nullptr);
+    location = location.Direction(Direction::Right);
+    EXPECT_EQ(map->colonist(location), colonist);
+
+    colonist->Go(Direction::Down);
+    EXPECT_EQ(map->colonist(location), nullptr);
+    location = location.Direction(Direction::Down);
+    EXPECT_EQ(map->colonist(location), colonist);
+
+    colonist->Go(Direction::Down);
+    EXPECT_EQ(map->colonist(location), colonist);
+}
+
+TEST(Worker, Go) {
+    Money money;
+    money.Add(50, 10 , 0);
+    auto map = new Map();
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+
+    Location location(1, 5);
+
+    factory->AddWorker(new City(location));
+    EXPECT_NE(map->worker(location), nullptr);
+
+    auto worker = map->worker(location);
+
+    worker->Go(Direction::Up);
+    EXPECT_EQ(map->worker(location), nullptr);
+    location = location.Direction(Direction::Up);
+    EXPECT_EQ(map->worker(location), worker);
+
+    worker->Go(Direction::Left);
+    EXPECT_EQ(map->worker(location), nullptr);
+    location = location.Direction(Direction::Left);
+    EXPECT_EQ(map->worker(location), worker);
+
+    worker->Go(Direction::Right);
+    EXPECT_EQ(map->worker(location), nullptr);
+    location = location.Direction(Direction::Right);
+    EXPECT_EQ(map->worker(location), worker);
+
+    worker->Go(Direction::Down);
+    EXPECT_EQ(map->worker(location), nullptr);
+    location = location.Direction(Direction::Down);
+    EXPECT_EQ(map->worker(location), worker);
+
+    worker->Go(Direction::Down);
+    EXPECT_EQ(map->worker(location), worker);
+}
+
+TEST(CombatUnit, Go) {
+    Money money;
+    money.Add(700, 500 , 200);
+    auto map = new Map();
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+
+    Location location(1, 5);
+
+    auto city = new City(location);
+
+    city->BuildArcherTower(money);
+    city->BuildWizardTower(money);
+
+    factory->AddWizard(city);
+    EXPECT_NE(map->combat(location), nullptr);
+
+    auto combat = map->combat(location);
+
+    combat->Go(Direction::Up);
+    EXPECT_EQ(map->combat(location), nullptr);
+    location = location.Direction(Direction::Up);
+    EXPECT_EQ(map->combat(location), combat);
+
+    combat->Go(Direction::Left);
+    EXPECT_EQ(map->combat(location), nullptr);
+    location = location.Direction(Direction::Left);
+    EXPECT_EQ(map->combat(location), combat);
+
+    combat->Go(Direction::Right);
+    EXPECT_EQ(map->combat(location), nullptr);
+    location = location.Direction(Direction::Right);
+    EXPECT_EQ(map->combat(location), combat);
+
+    combat->Go(Direction::Down);
+    EXPECT_EQ(map->combat(location), nullptr);
+    location = location.Direction(Direction::Down);
+    EXPECT_EQ(map->combat(location), combat);
+
+    combat->Go(Direction::Down);
+    EXPECT_EQ(map->combat(location), combat);
+}
+
 TEST(WaterFactory, add) {
 
     Money money;
@@ -157,7 +273,7 @@ TEST(WaterFactory, add) {
 
     auto factory = new UnitFactory(Player::Me, map, money, Race::Water);
 
-    City new_city = City(Location(5,6));
+    auto new_city = new City(Location(5,6));
 
     //test Colonist
 
@@ -215,7 +331,7 @@ TEST(WaterFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 0);
 
-    new_city.location = Location(7,8);
+    new_city->location = Location(7,8);
 
     factory->AddWorker(new_city);
 
@@ -326,23 +442,23 @@ TEST(WaterFactory, add) {
     //test Archer
 
 
-    new_city.location = Location(3, 8);
+    new_city->location = Location(3, 8);
 
     factory->AddArcher(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    new_city.BuildWizardTower(money);
+    new_city->BuildWizardTower(money);
 
-    EXPECT_EQ(new_city.IsWizardTowerExist(), 0);
+    EXPECT_EQ(new_city->IsWizardTowerExist(), 0);
 
     factory->AddArcher(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    new_city.BuildArcherTower(money);
+    new_city->BuildArcherTower(money);
 
-    EXPECT_EQ(new_city.IsArcherTowerExist(), 1);
+    EXPECT_EQ(new_city->IsArcherTowerExist(), 1);
 
     factory->AddArcher(new_city);
 
@@ -401,15 +517,15 @@ TEST(WaterFactory, add) {
 
     //test Wizard
 
-    new_city.location = Location(9, 8);
+    new_city->location = Location(9, 8);
 
     factory->AddWizard(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
-    new_city.BuildWizardTower(money);
+    new_city->BuildWizardTower(money);
 
-    EXPECT_EQ(new_city.IsWizardTowerExist(), 1);
+    EXPECT_EQ(new_city->IsWizardTowerExist(), 1);
 
     factory->AddWizard(new_city);
 
@@ -479,7 +595,7 @@ TEST(EarthFactory, add) {
 
     auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
 
-    City new_city = City(Location(5,6));
+    auto new_city = new City(Location(5,6));
 
     //test Colonist
 
@@ -537,7 +653,7 @@ TEST(EarthFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 0);
 
-    new_city.location = Location(7,8);
+    new_city->location = Location(7,8);
 
     factory->AddWorker(new_city);
 
@@ -648,23 +764,23 @@ TEST(EarthFactory, add) {
     //test Archer
 
 
-    new_city.location = Location(3, 8);
+    new_city->location = Location(3, 8);
 
     factory->AddArcher(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    new_city.BuildWizardTower(money);
+    new_city->BuildWizardTower(money);
 
-    EXPECT_EQ(new_city.IsWizardTowerExist(), 0);
+    EXPECT_EQ(new_city->IsWizardTowerExist(), 0);
 
     factory->AddArcher(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    new_city.BuildArcherTower(money);
+    new_city->BuildArcherTower(money);
 
-    EXPECT_EQ(new_city.IsArcherTowerExist(), 1);
+    EXPECT_EQ(new_city->IsArcherTowerExist(), 1);
 
     factory->AddArcher(new_city);
 
@@ -723,15 +839,15 @@ TEST(EarthFactory, add) {
 
     //test Wizard
 
-    new_city.location = Location(9, 8);
+    new_city->location = Location(9, 8);
 
     factory->AddWizard(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
-    new_city.BuildWizardTower(money);
+    new_city->BuildWizardTower(money);
 
-    EXPECT_EQ(new_city.IsWizardTowerExist(), 1);
+    EXPECT_EQ(new_city->IsWizardTowerExist(), 1);
 
     factory->AddWizard(new_city);
 
@@ -801,7 +917,7 @@ TEST(AirFactory, add) {
 
     auto factory = new UnitFactory(Player::Me, map, money, Race::Air);
 
-    City new_city = City(Location(5,6));
+    auto new_city = new City(Location(5,6));
 
     //test Colonist
 
@@ -859,7 +975,7 @@ TEST(AirFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 0);
 
-    new_city.location = Location(7,8);
+    new_city->location = Location(7,8);
 
     factory->AddWorker(new_city);
 
@@ -970,23 +1086,23 @@ TEST(AirFactory, add) {
     //test Archer
 
 
-    new_city.location = Location(3, 8);
+    new_city->location = Location(3, 8);
 
     factory->AddArcher(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    new_city.BuildWizardTower(money);
+    new_city->BuildWizardTower(money);
 
-    EXPECT_EQ(new_city.IsWizardTowerExist(), 0);
+    EXPECT_EQ(new_city->IsWizardTowerExist(), 0);
 
     factory->AddArcher(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    new_city.BuildArcherTower(money);
+    new_city->BuildArcherTower(money);
 
-    EXPECT_EQ(new_city.IsArcherTowerExist(), 1);
+    EXPECT_EQ(new_city->IsArcherTowerExist(), 1);
 
     factory->AddArcher(new_city);
 
@@ -1045,15 +1161,15 @@ TEST(AirFactory, add) {
 
     //test Wizard
 
-    new_city.location = Location(9, 8);
+    new_city->location = Location(9, 8);
 
     factory->AddWizard(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
-    new_city.BuildWizardTower(money);
+    new_city->BuildWizardTower(money);
 
-    EXPECT_EQ(new_city.IsWizardTowerExist(), 1);
+    EXPECT_EQ(new_city->IsWizardTowerExist(), 1);
 
     factory->AddWizard(new_city);
 
@@ -1123,7 +1239,7 @@ TEST(FireFactory, add) {
 
     auto factory = new UnitFactory(Player::Me, map, money, Race::Fire);
 
-    City new_city = City(Location(5,6));
+    auto new_city = new City(Location(5,6));
 
     //test Colonist
 
@@ -1181,7 +1297,7 @@ TEST(FireFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 0);
 
-    new_city.location = Location(7,8);
+    new_city->location = Location(7,8);
 
     factory->AddWorker(new_city);
 
@@ -1292,23 +1408,23 @@ TEST(FireFactory, add) {
     //test Archer
 
 
-    new_city.location = Location(3, 8);
+    new_city->location = Location(3, 8);
 
     factory->AddArcher(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    new_city.BuildWizardTower(money);
+    new_city->BuildWizardTower(money);
 
-    EXPECT_EQ(new_city.IsWizardTowerExist(), 0);
+    EXPECT_EQ(new_city->IsWizardTowerExist(), 0);
 
     factory->AddArcher(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 1);
 
-    new_city.BuildArcherTower(money);
+    new_city->BuildArcherTower(money);
 
-    EXPECT_EQ(new_city.IsArcherTowerExist(), 1);
+    EXPECT_EQ(new_city->IsArcherTowerExist(), 1);
 
     factory->AddArcher(new_city);
 
@@ -1367,15 +1483,15 @@ TEST(FireFactory, add) {
 
     //test Wizard
 
-    new_city.location = Location(9, 8);
+    new_city->location = Location(9, 8);
 
     factory->AddWizard(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
-    new_city.BuildWizardTower(money);
+    new_city->BuildWizardTower(money);
 
-    EXPECT_EQ(new_city.IsWizardTowerExist(), 1);
+    EXPECT_EQ(new_city->IsWizardTowerExist(), 1);
 
     factory->AddWizard(new_city);
 

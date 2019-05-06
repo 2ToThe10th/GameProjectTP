@@ -8,7 +8,7 @@
 class Map;
 
 class Unit {
-private:
+protected:
     const int MAX_HEALTH;
     int health;
     Location location;
@@ -22,7 +22,7 @@ public:
     virtual ~Unit() = default;
 
     virtual std::string Info();
-    //virtual void Go(Direction where);
+    virtual void Go(Direction where) = 0;
 
     Location GetLocation() const;
 };

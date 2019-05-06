@@ -1,5 +1,10 @@
-#include "Map.h"
 #include <string>
+#include <cassert>
+#include "Map.h"
+#include "CombatUnit.h"
+#include "Colonist.h"
+#include "Worker.h"
+#include "City.h"
 
 using std::string;
 using std::to_string;
@@ -73,17 +78,21 @@ string Map::Info() {
 }
 
 CombatUnit*& Map::combat(Location location) {
+    assert(location.IsOnField());
     return map_combat[location.x][location.y];
 }
 
 Colonist*& Map::colonist(Location location) {
+    assert(location.IsOnField());
     return map_colonist[location.x][location.y];
 }
 
 Worker*& Map::worker(Location location) {
+    assert(location.IsOnField());
     return map_worker[location.x][location.y];
 }
 
 City*& Map::city(Location location) {
+    assert(location.IsOnField());
     return map_city[location.x][location.y];
 }

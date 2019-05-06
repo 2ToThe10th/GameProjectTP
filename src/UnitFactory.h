@@ -26,11 +26,11 @@ public:
     UnitFactory(Player which, Map* map, Money& money, Race race);
     ~UnitFactory();
 
-    void AddWarrior(City& where);
-    void AddArcher(City& where);
-    void AddWizard(City& where);
-    void AddColonist(City& where);
-    void AddWorker(City& where);
+    void AddWarrior(City* where);
+    void AddArcher(City* where);
+    void AddWizard(City* where);
+    void AddColonist(City* where);
+    void AddWorker(City* where);
 
     std::string Info();
 };

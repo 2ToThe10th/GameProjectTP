@@ -2,16 +2,18 @@
 #define GAME_MAP_H
 
 #include <string>
-#include "CombatUnit.h"
-#include "Colonist.h"
-#include "Worker.h"
-#include "City.h"
+#include "Location.h"
+
+class CombatUnit;
+class Colonist;
+class Worker;
+class City;
 
 class Map {
-private:
+public:
     static const int MAX_HEIGHT = 20;
     static const int MAX_WIDTH = 20;
-
+private:
     CombatUnit* map_combat[MAX_HEIGHT][MAX_WIDTH];
     Colonist* map_colonist[MAX_HEIGHT][MAX_WIDTH];
     Worker* map_worker[MAX_HEIGHT][MAX_WIDTH];
