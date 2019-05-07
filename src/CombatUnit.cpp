@@ -30,11 +30,13 @@ void CombatUnit::Go(Direction where) {
             unsigned int id = PlaceToInsert(my_unit_factory->list_colonist);
             my_unit_factory->list_colonist[id] = opponent_unit_factory->list_colonist[map->colonist(new_location)->id];
             opponent_unit_factory->list_colonist[map->colonist(new_location)->id] = nullptr;
+            map->colonist(new_location)->id = id;
         }
         else {
             unsigned int id = PlaceToInsert(opponent_unit_factory->list_colonist);
             opponent_unit_factory->list_colonist[id] = my_unit_factory->list_colonist[map->colonist(new_location)->id];
             my_unit_factory->list_colonist[map->colonist(new_location)->id] = nullptr;
+            map->colonist(new_location)->id = id;
         }
         map->colonist(new_location)->which = which;
     }
@@ -43,11 +45,13 @@ void CombatUnit::Go(Direction where) {
             unsigned int id = PlaceToInsert(my_unit_factory->list_worker);
             my_unit_factory->list_worker[id] = opponent_unit_factory->list_worker[map->worker(new_location)->id];
             opponent_unit_factory->list_worker[map->worker(new_location)->id] = nullptr;
+            map->worker(new_location)->id = id;
         }
         else {
             unsigned int id = PlaceToInsert(opponent_unit_factory->list_worker);
             opponent_unit_factory->list_worker[id] = my_unit_factory->list_worker[map->worker(new_location)->id];
             my_unit_factory->list_worker[map->worker(new_location)->id] = nullptr;
+            map->worker(new_location)->id = id;
         }
         map->worker(new_location)->which = which;
     }
