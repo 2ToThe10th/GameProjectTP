@@ -2,6 +2,7 @@
 #include "Worker.h"
 #include "Map.h"
 #include "CombatUnit.h"
+#include "UnitFactory.h"
 
 Worker::Worker(Player which, Race race, int health, Location city_location, Map* map, unsigned int id) :
         Unit(which, race, health, city_location, map, id) {}
@@ -34,4 +35,14 @@ void Worker::Go(Direction where) {
     map->worker(location) = nullptr;
     location = new_location;
     already_move = true;
+}
+
+Worker::~Worker() {
+    if(which == Player::Me) {
+        my_unit_factory->list_worker[id] = nullptr;
+    }
+    else {
+        opponent_unit_factory->list_worker[id] = nullptr;
+    }
+    map->worker(location) = nullptr;
 }

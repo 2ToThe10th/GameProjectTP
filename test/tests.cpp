@@ -564,6 +564,72 @@ TEST(Warrior, Attack) {
     delete map;
 }
 
+TEST(Archer, Attack) {
+    Money money;
+    money.Add(1700, 1500 , 2100);
+    auto map = new Map();
+    auto my_factory = new UnitFactory(Player::Me, map, money, Race::Fire);
+    Unit::my_unit_factory = my_factory;
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Air);
+    Unit::opponent_unit_factory = enemy_factory;
+
+    Location my_unit_location(5, 6);
+
+    auto city = new City(my_unit_location);
+    city->BuildArcherTower(money);
+    my_factory->AddArcher(city);
+    delete city;
+
+    auto my_archer = my_factory->list_combat_unit[0];
+
+    Location opponent_unit_location(6,7);
+
+    city = new City(opponent_unit_location);
+    enemy_factory->AddWarrior(city);
+    delete city;
+
+    auto enemy_warrior = enemy_factory->list_combat_unit[0];
+    vector<Direction> vec = {Direction::Up, Direction::Right};
+    my_archer->NewTurn();
+    my_archer->Attack(vec);
+    EXPECT_EQ(enemy_warrior->health, enemy_warrior->MAX_HEALTH - my_archer->damage);
+
+    my_archer->Attack(vec);
+    EXPECT_EQ(enemy_warrior->health, enemy_warrior->MAX_HEALTH - my_archer->damage);
+
+    my_archer->NewTurn();
+    vec.push_back(Direction::Up);
+    my_archer->Attack(vec);
+    EXPECT_EQ(enemy_warrior->health, enemy_warrior->MAX_HEALTH - my_archer->damage);
+    vec.pop_back();
+
+    enemy_warrior->NewTurn();
+    enemy_warrior->Go(Direction::Left);
+    EXPECT_EQ(map->combat(opponent_unit_location), nullptr);
+    opponent_unit_location = opponent_unit_location.Direction(Direction::Left);
+    EXPECT_EQ(map->combat(opponent_unit_location), enemy_warrior);
+
+    vec.pop_back();
+
+    my_archer->Attack(vec);
+    EXPECT_EQ(map->combat(opponent_unit_location), nullptr);
+
+    opponent_unit_location = opponent_unit_location.Direction(Direction::Left);
+    city = new City(opponent_unit_location);
+    enemy_factory->AddWorker(city);
+    delete city;
+
+    vec.push_back(Direction::Left);
+
+    my_archer->NewTurn();
+    my_archer->Attack(vec);
+    EXPECT_EQ(map->worker(opponent_unit_location), nullptr);
+
+    delete my_factory;
+    delete enemy_factory;
+    delete map;
+}
+
 TEST(WaterFactory, add) {
 
     Money money;

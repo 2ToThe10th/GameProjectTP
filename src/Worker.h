@@ -10,7 +10,7 @@ public:
     static const int cost_gold = 0;
 
     explicit Worker(Player which, Race race, int health, Location city_location, Map* map, unsigned int id);
-    ~Worker() override = default;
+    ~Worker() override;
 
     std::string Info() override;
     void Go(Direction where) override;

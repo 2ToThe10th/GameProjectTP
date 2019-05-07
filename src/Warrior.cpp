@@ -33,8 +33,6 @@ void Warrior::Attack(std::vector<Direction>& where_attack) {
 
     auto enemy = map->combat(location_to_attack);
 
-
-
     health -= enemy->damage;
     enemy->health -= damage;
 
