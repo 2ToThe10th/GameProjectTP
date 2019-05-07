@@ -14,7 +14,7 @@ public:
     ~Warrior() override = default;
 
     std::string Info() override;
-    void Attack(Location where_attack) override {};
+    void Attack(std::vector<Direction>& where_attack) override;
 };
 
 

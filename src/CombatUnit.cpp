@@ -17,6 +17,10 @@ std::string CombatUnit::Info() {
 void CombatUnit::Go(Direction where) {
     Location new_location = location.Direction(where);
 
+    if(already_move) {
+        std::cout << "This combat has already moved this turn" << std::endl;
+        return;
+    }
     if(!new_location.IsOnField()) {
         std::cout << "Units can go only in the fields" << std::endl;
         return;
@@ -59,4 +63,23 @@ void CombatUnit::Go(Direction where) {
     map->combat(new_location) = map->combat(location);
     map->combat(location) = nullptr;
     location = new_location;
+    already_move = true;
+}
+
+CombatUnit::~CombatUnit() {
+    if(which == Player::Me) {
+        my_unit_factory->list_combat_unit[id] = nullptr;
+    }
+    else {
+        opponent_unit_factory->list_combat_unit[id] = nullptr;
+    }
+    map->combat(location) = nullptr;
+    if(health <= 0) {
+        if(which == Player::Me) {
+            std::cout << "Combat id=" + std::to_string(id) + " die." << std::endl;
+        }
+        else {
+            std::cout << "Enemy combat id=" + std::to_string(id) + " die." << std::endl;
+        }
+    }
 }

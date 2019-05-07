@@ -16,6 +16,7 @@ public:
     std::vector<City*> cities;
 
     CityFactory(Player which, Map* map);
+    ~CityFactory();
 
     void AddCity(const Colonist* colonist);
 

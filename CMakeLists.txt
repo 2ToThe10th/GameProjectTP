@@ -11,9 +11,9 @@ endif()
 
 include_directories(src)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
 
 if(DEBUG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g")
     include_directories(test)
     set(SOURCE_DEBUG_FILES test/tests.cpp)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG=1")

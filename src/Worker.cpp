@@ -13,6 +13,10 @@ std::string Worker::Info() {
 void Worker::Go(Direction where) {
     Location new_location = location.Direction(where);
 
+    if(already_move) {
+        std::cout << "This worker has already moved this turn" << std::endl;
+        return;
+    }
     if(!new_location.IsOnField()) {
         std::cout << "Units can go only in the fields" << std::endl;
         return;
@@ -29,4 +33,5 @@ void Worker::Go(Direction where) {
     map->worker(new_location) = map->worker(location);
     map->worker(location) = nullptr;
     location = new_location;
+    already_move = true;
 }

@@ -172,6 +172,7 @@ int Game() {
     delete opponent_factory;
     delete my_city_factory;
     delete opponent_city_factory;
+    delete map;
 
     return 0;
 }

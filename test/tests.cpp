@@ -98,23 +98,60 @@ TEST(Map, Constructor) {
     EXPECT_EQ(map->combat(Location(5,6)), nullptr);
     EXPECT_EQ(map->worker(Location(7,8)), nullptr);
 
+    delete map;
+}
+
+TEST(Colonist, Delete) {
+    auto map = new Map();
+    Money money;
+    money.Add(100500, 100500, 100500);
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Fire);
+    auto city = new City(Location(2,2));
+    factory->AddColonist(city);
+    Colonist* colonist = factory->list_colonist[0];
+
+    Unit::my_unit_factory = factory;
+
+    delete colonist;
+
+    delete map;
+    delete factory;
+    delete city;
 }
 
 TEST(CityFactory, AddCity) {
     auto map = new Map();
-    auto colonist = new Colonist(Player::Me, Race::Fire, 100, Location(2,2), map, 0);
+    Money money;
+    money.Add(100500, 100500, 100500);
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Fire);
+    Unit::my_unit_factory = factory;
+    auto city = new City(Location(2,2));
+    factory->AddColonist(city);
+    delete city;
+    Colonist* colonist = factory->list_colonist[0];
     auto city_factory = new CityFactory(Player::Me, map);
+
+    Unit::my_unit_factory = factory;
 
     EXPECT_EQ(city_factory->cities.size(), 0);
 
     city_factory->AddCity(colonist);
     EXPECT_EQ(city_factory->cities.size(), 1);
 
+    city = new City(Location(2,2));
+    factory->AddColonist(city);
+    delete city;
+    colonist = factory->list_colonist[0];
+
     city_factory->AddCity(colonist);
     EXPECT_EQ(city_factory->cities.size(), 1);
 
     city_factory->AddCity(nullptr);
     EXPECT_EQ(city_factory->cities.size(), 1);
+
+    delete city_factory;
+    delete factory;
+    delete map;
 }
 
 TEST(Money, Add_Take) {
@@ -151,117 +188,155 @@ TEST(Money, Add_Take) {
 
 TEST(Colonist, Go) {
     Money money;
-    money.Add(150, 50 , 0);
+    money.Add(1150, 1050 , 100);
     auto map = new Map();
     auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
 
     Location location(1, 5);
 
-    factory->AddColonist(new City(location));
+    auto city = new City(location);
+    factory->AddColonist(city);
+    delete city;
     EXPECT_NE(map->colonist(location), nullptr);
 
     auto colonist = map->colonist(location);
 
+    colonist->NewTurn();
     colonist->Go(Direction::Up);
     EXPECT_EQ(map->colonist(location), nullptr);
     location = location.Direction(Direction::Up);
     EXPECT_EQ(map->colonist(location), colonist);
 
+    colonist->NewTurn();
     colonist->Go(Direction::Left);
     EXPECT_EQ(map->colonist(location), nullptr);
     location = location.Direction(Direction::Left);
     EXPECT_EQ(map->colonist(location), colonist);
 
+    colonist->NewTurn();
     colonist->Go(Direction::Right);
     EXPECT_EQ(map->colonist(location), nullptr);
     location = location.Direction(Direction::Right);
     EXPECT_EQ(map->colonist(location), colonist);
 
+    colonist->NewTurn();
     colonist->Go(Direction::Down);
     EXPECT_EQ(map->colonist(location), nullptr);
     location = location.Direction(Direction::Down);
     EXPECT_EQ(map->colonist(location), colonist);
 
+    colonist->NewTurn();
     colonist->Go(Direction::Down);
     EXPECT_EQ(map->colonist(location), colonist);
 
-    factory->AddWarrior(new City(location.Direction(Direction::Up)));
+    city = new City(location.Direction(Direction::Up));
+    factory->AddWarrior(city);
+    delete city;
 
+    colonist->NewTurn();
     colonist->Go(Direction::Up);
     EXPECT_EQ(map->colonist(location), nullptr);
     location = location.Direction(Direction::Up);
     EXPECT_EQ(map->colonist(location), colonist);
 
-    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Water);
 
-    enemy_factory->AddWarrior(new City(location.Direction(Direction::Up)));
+    city = new City(location.Direction(Direction::Up));
+    enemy_factory->AddWarrior(city);
+    delete city;
 
+    colonist->NewTurn();
     colonist->Go(Direction::Up);
     EXPECT_EQ(map->colonist(location), colonist);
     location = location.Direction(Direction::Up);
     EXPECT_EQ(map->colonist(location), nullptr);
+
+    Unit::my_unit_factory = factory;
+    Unit::opponent_unit_factory = enemy_factory;
+
+    delete factory;
+    delete enemy_factory;
+    delete map;
 }
 
 TEST(Worker, Go) {
     Money money;
-    money.Add(50, 10 , 0);
+    money.Add(1050, 1010 , 100);
     auto map = new Map();
-    auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Air);
+
+    Unit::my_unit_factory = factory;
 
     Location location(1, 5);
 
-    factory->AddWorker(new City(location));
+    auto city = new City(location);
+    factory->AddWorker(city);
+    delete city;
     EXPECT_NE(map->worker(location), nullptr);
 
     auto worker = map->worker(location);
 
+    worker->NewTurn();
     worker->Go(Direction::Up);
     EXPECT_EQ(map->worker(location), nullptr);
     location = location.Direction(Direction::Up);
     EXPECT_EQ(map->worker(location), worker);
 
+    worker->NewTurn();
     worker->Go(Direction::Left);
     EXPECT_EQ(map->worker(location), nullptr);
     location = location.Direction(Direction::Left);
     EXPECT_EQ(map->worker(location), worker);
 
+    worker->NewTurn();
     worker->Go(Direction::Right);
     EXPECT_EQ(map->worker(location), nullptr);
     location = location.Direction(Direction::Right);
     EXPECT_EQ(map->worker(location), worker);
 
+    worker->NewTurn();
     worker->Go(Direction::Down);
     EXPECT_EQ(map->worker(location), nullptr);
     location = location.Direction(Direction::Down);
     EXPECT_EQ(map->worker(location), worker);
 
+    worker->NewTurn();
     worker->Go(Direction::Down);
     EXPECT_EQ(map->worker(location), worker);
 
+    city = new City(location.Direction(Direction::Up));
+    factory->AddWarrior(city);
+    delete city;
 
-    factory->AddWarrior(new City(location.Direction(Direction::Up)));
-
+    worker->NewTurn();
     worker->Go(Direction::Up);
     EXPECT_EQ(map->worker(location), nullptr);
     location = location.Direction(Direction::Up);
     EXPECT_EQ(map->worker(location), worker);
 
     auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
+    Unit::opponent_unit_factory = enemy_factory;
 
-    enemy_factory->AddWarrior(new City(location.Direction(Direction::Up)));
+    city = new City(location.Direction(Direction::Up));
+    enemy_factory->AddWarrior(city);
+    delete city;
 
+    worker->NewTurn();
     worker->Go(Direction::Up);
     EXPECT_EQ(map->worker(location), worker);
     location = location.Direction(Direction::Up);
     EXPECT_EQ(map->worker(location), nullptr);
+
+    delete enemy_factory;
+    delete factory;
+    delete map;
 }
 
 TEST(CombatUnit, Go) {
     Money money;
-    money.Add(700, 500 , 200);
+    money.Add(1700, 1500 , 2100);
     auto map = new Map();
-    auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
-
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Fire);
     Unit::my_unit_factory = factory;
 
     Location location(1, 5);
@@ -273,36 +348,45 @@ TEST(CombatUnit, Go) {
 
     factory->AddWizard(city);
     EXPECT_NE(map->combat(location), nullptr);
+    delete city;
 
     auto combat = map->combat(location);
 
+    combat->NewTurn();
     combat->Go(Direction::Up);
     EXPECT_EQ(map->combat(location), nullptr);
     location = location.Direction(Direction::Up);
     EXPECT_EQ(map->combat(location), combat);
 
+    combat->NewTurn();
     combat->Go(Direction::Left);
     EXPECT_EQ(map->combat(location), nullptr);
     location = location.Direction(Direction::Left);
     EXPECT_EQ(map->combat(location), combat);
 
+    combat->NewTurn();
     combat->Go(Direction::Right);
     EXPECT_EQ(map->combat(location), nullptr);
     location = location.Direction(Direction::Right);
     EXPECT_EQ(map->combat(location), combat);
 
+    combat->NewTurn();
     combat->Go(Direction::Down);
     EXPECT_EQ(map->combat(location), nullptr);
     location = location.Direction(Direction::Down);
     EXPECT_EQ(map->combat(location), combat);
 
+    combat->NewTurn();
     combat->Go(Direction::Down);
     EXPECT_EQ(map->combat(location), combat);
 
-    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Air);
     Unit::opponent_unit_factory = enemy_factory;
-    enemy_factory->AddColonist(new City(location.Direction(Direction::Up)));
+    city = new City(location.Direction(Direction::Up));
+    enemy_factory->AddColonist(city);
+    delete city;
 
+    combat->NewTurn();
     combat->Go(Direction::Up);
     EXPECT_EQ(map->combat(location), nullptr);
     location = location.Direction(Direction::Up);
@@ -313,22 +397,94 @@ TEST(CombatUnit, Go) {
     EXPECT_EQ(factory->list_colonist.size(), 1);
     EXPECT_EQ(factory->list_colonist[0]->which, Player::Me);
     
-    location = Location(12,15);
-    
-    enemy_factory->AddWarrior(new City(location));
-    factory->AddWorker(new City(location.Direction(Direction::Up)));
+    Location second_location = location.Direction(Direction::Up).Direction(Direction::Right);
 
-    combat = map->combat(location);
+    city = new City(second_location);
+    enemy_factory->AddWarrior(city);
+    delete city;
+    city = new City(Location(12, 13));
+    factory->AddWorker(city);
+    delete city;
+    city = new City(second_location.Direction(Direction::Left));
+    factory->AddWorker(city);
+    delete city;
+
+    auto second_combat = map->combat(second_location);
     
+    second_combat->NewTurn();
+    second_combat->Go(Direction::Left);
+    EXPECT_EQ(map->combat(second_location), nullptr);
+    second_location = second_location.Direction(Direction::Left);
+    EXPECT_EQ(map->combat(second_location), second_combat);
+
+    EXPECT_EQ(factory->list_worker.size(), 2);
+    EXPECT_EQ(factory->list_worker[1], nullptr);
+    EXPECT_EQ(enemy_factory->list_worker.size(), 1);
+    EXPECT_EQ(enemy_factory->list_worker[0]->which, Player::Opponent);
+
+    second_combat->NewTurn();
+    second_combat->Go(Direction::Right);
+    EXPECT_EQ(map->combat(second_location), nullptr);
+    second_location = second_location.Direction(Direction::Right);
+    EXPECT_EQ(map->combat(second_location), second_combat);
+
+    combat->NewTurn();
     combat->Go(Direction::Up);
     EXPECT_EQ(map->combat(location), nullptr);
     location = location.Direction(Direction::Up);
     EXPECT_EQ(map->combat(location), combat);
 
-    EXPECT_EQ(factory->list_worker.size(), 1);
-    EXPECT_EQ(factory->list_worker[0], nullptr);
     EXPECT_EQ(enemy_factory->list_worker.size(), 1);
-    EXPECT_EQ(enemy_factory->list_worker[0]->which, Player::Opponent);
+    EXPECT_EQ(enemy_factory->list_worker[0], nullptr);
+    EXPECT_EQ(factory->list_worker.size(), 2);
+    EXPECT_EQ(factory->list_worker[1]->which, Player::Me);
+
+    delete factory;
+    delete enemy_factory;
+    delete map;
+}
+
+TEST(CombatUnit, Die) {
+    Money money;
+    money.Add(1700, 1500 , 2100);
+    auto map = new Map();
+    auto my_factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+
+    Unit::my_unit_factory = my_factory;
+
+    Location my_warrior_location(2, 3);
+
+    auto city = new City(my_warrior_location);
+    my_factory->AddWarrior(city);
+    delete city;
+
+    delete my_factory->list_combat_unit[0];
+
+    EXPECT_EQ(my_factory->list_combat_unit[0], nullptr);
+
+    delete my_factory;
+    delete map;
+}
+
+TEST(Warrior, Attack) {
+    Money money;
+    money.Add(1700, 1500 , 2100);
+    auto map = new Map();
+    auto my_factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Fire);
+
+    Unit::my_unit_factory = my_factory;
+    Unit::opponent_unit_factory = enemy_factory;
+
+    Location my_warrior_location(2, 3);
+
+    auto city = new City(my_warrior_location);
+    my_factory->AddWarrior(city);
+
+    delete city;
+    delete my_factory;
+    delete enemy_factory;
+    delete map;
 }
 
 TEST(WaterFactory, add) {
@@ -340,6 +496,8 @@ TEST(WaterFactory, add) {
     auto factory = new UnitFactory(Player::Me, map, money, Race::Water);
 
     auto new_city = new City(Location(5,6));
+
+    Unit::my_unit_factory = factory;
 
     //test Colonist
 
@@ -651,6 +809,8 @@ TEST(WaterFactory, add) {
     EXPECT_EQ(map->Info(), sample);
 
     delete factory;
+    delete map;
+    delete new_city;
 }
 
 TEST(EarthFactory, add) {
@@ -662,6 +822,8 @@ TEST(EarthFactory, add) {
     auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
 
     auto new_city = new City(Location(5,6));
+
+    Unit::my_unit_factory = factory;
 
     //test Colonist
 
@@ -973,6 +1135,8 @@ TEST(EarthFactory, add) {
     EXPECT_EQ(map->Info(), sample);
 
     delete factory;
+    delete map;
+    delete new_city;
 }
 
 TEST(AirFactory, add) {
@@ -984,6 +1148,8 @@ TEST(AirFactory, add) {
     auto factory = new UnitFactory(Player::Me, map, money, Race::Air);
 
     auto new_city = new City(Location(5,6));
+
+    Unit::my_unit_factory = factory;
 
     //test Colonist
 
@@ -1295,6 +1461,8 @@ TEST(AirFactory, add) {
     EXPECT_EQ(map->Info(), sample);
 
     delete factory;
+    delete map;
+    delete new_city;
 }
 
 TEST(FireFactory, add) {
@@ -1306,6 +1474,8 @@ TEST(FireFactory, add) {
     auto factory = new UnitFactory(Player::Me, map, money, Race::Fire);
 
     auto new_city = new City(Location(5,6));
+
+    Unit::my_unit_factory = factory;
 
     //test Colonist
 
@@ -1617,4 +1787,6 @@ TEST(FireFactory, add) {
     EXPECT_EQ(map->Info(), sample);
 
     delete factory;
+    delete map;
+    delete new_city;
 }

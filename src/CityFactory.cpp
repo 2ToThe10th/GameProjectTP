@@ -37,4 +37,12 @@ void CityFactory::AddCity(const Colonist* colonist) {
 
     cities.push_back(new City(colonist->GetLocation()));
     map->city(colonist->GetLocation()) = cities.back();
+
+    delete colonist;
+}
+
+CityFactory::~CityFactory() {
+    for(auto i: cities) {
+        delete i;
+    }
 }

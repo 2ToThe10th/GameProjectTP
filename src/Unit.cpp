@@ -18,3 +18,7 @@ Location Unit::GetLocation() const {
     return location;
 }
 
+void Unit::NewTurn() {
+    already_move = false;
+}
+
