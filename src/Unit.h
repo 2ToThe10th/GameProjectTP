@@ -10,12 +10,12 @@ class Map;
 
 class Unit {
 protected:
-    const int MAX_HEALTH;
     Location location;
     bool already_move = true;
     bool frozen = false;
     Map* map;
 public:
+    const int MAX_HEALTH;
     int health;
     Player which;
     unsigned int id;

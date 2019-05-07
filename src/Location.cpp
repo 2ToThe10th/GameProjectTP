@@ -46,5 +46,5 @@ std::string Location::Info() {
 }
 
 bool Location::IsOnField() {
-    return !(x <= 0 || x > Map::MAX_HEIGHT || y <= 0 || y > Map::MAX_WIDTH);
+    return !(x < 0 || x >= Map::MAX_HEIGHT || y < 0 || y >= Map::MAX_WIDTH);
 }

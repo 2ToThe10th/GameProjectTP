@@ -28,9 +28,12 @@ void Warrior::Attack(std::vector<Direction>& where_attack) {
     }
     if(map->combat(location_to_attack) == nullptr || map->combat(location_to_attack)->which == which) {
         std::cout << "No enemy combat unit on field to attack" << std::endl;
+        return;
     }
 
     auto enemy = map->combat(location_to_attack);
+
+
 
     health -= enemy->damage;
     enemy->health -= damage;

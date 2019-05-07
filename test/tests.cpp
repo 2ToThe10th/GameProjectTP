@@ -1,16 +1,19 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <CityFactory.h>
+#include <Unit.h>
 #include "Location.h"
 #include "Map.h"
 #include "Money.h"
 #include "UnitFactory.h"
 #include "GameSocket.h"
+#include "Warrior.h"
 
 using std::cin;
 using std::cout;
 using std::endl;
 using std::to_string;
+using std::vector;
 
 /*
 TEST(GameSocket, server) {
@@ -192,7 +195,7 @@ TEST(Colonist, Go) {
     auto map = new Map();
     auto factory = new UnitFactory(Player::Me, map, money, Race::Earth);
 
-    Location location(1, 5);
+    Location location(0, 5);
 
     auto city = new City(location);
     factory->AddColonist(city);
@@ -267,7 +270,7 @@ TEST(Worker, Go) {
 
     Unit::my_unit_factory = factory;
 
-    Location location(1, 5);
+    Location location(0, 7);
 
     auto city = new City(location);
     factory->AddWorker(city);
@@ -339,7 +342,7 @@ TEST(CombatUnit, Go) {
     auto factory = new UnitFactory(Player::Me, map, money, Race::Fire);
     Unit::my_unit_factory = factory;
 
-    Location location(1, 5);
+    Location location(0, 4);
 
     auto city = new City(location);
 
@@ -471,17 +474,91 @@ TEST(Warrior, Attack) {
     money.Add(1700, 1500 , 2100);
     auto map = new Map();
     auto my_factory = new UnitFactory(Player::Me, map, money, Race::Earth);
-    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Fire);
-
     Unit::my_unit_factory = my_factory;
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Fire);
     Unit::opponent_unit_factory = enemy_factory;
 
     Location my_warrior_location(2, 3);
 
     auto city = new City(my_warrior_location);
     my_factory->AddWarrior(city);
-
     delete city;
+
+    auto my_warrior = my_factory->list_combat_unit[0];
+
+    Location enemy_warrior_location = my_warrior_location.Direction(Direction::Left);
+
+    city = new City(enemy_warrior_location);
+    enemy_factory->AddWarrior(city);
+    delete city;
+
+    auto enemy_warrior = enemy_factory->list_combat_unit[0];
+
+    my_warrior->NewTurn();
+
+    vector<Direction> vec;
+
+    my_warrior->Attack(vec);
+    EXPECT_EQ(my_warrior->health, my_warrior->MAX_HEALTH);
+
+    vec.push_back(Direction::Down);
+    my_warrior->Attack(vec);
+    EXPECT_EQ(my_warrior->health, my_warrior->MAX_HEALTH);
+
+    vec[0] = Direction::Left;
+    my_warrior->Attack(vec);
+    EXPECT_EQ(my_warrior->health, my_warrior->MAX_HEALTH - enemy_warrior->damage);
+    EXPECT_EQ(enemy_warrior->health, enemy_warrior->MAX_HEALTH - my_warrior->damage);
+
+    enemy_warrior->health = my_warrior->damage;
+
+    my_warrior->Attack(vec);
+    EXPECT_EQ(my_warrior->health, my_warrior->MAX_HEALTH - enemy_warrior->damage);
+
+    my_warrior->NewTurn();
+    int enemy_damage = enemy_warrior->damage;
+    my_warrior->Attack(vec);
+    EXPECT_EQ(my_warrior->health, my_warrior->MAX_HEALTH - 2*enemy_damage);
+    EXPECT_EQ(map->combat(my_warrior_location), nullptr);
+    EXPECT_EQ(map->combat(enemy_warrior_location), my_warrior);
+
+    my_warrior_location = enemy_warrior_location;
+    enemy_warrior_location = enemy_warrior_location.Direction(Direction::Down);
+
+    city = new City(enemy_warrior_location);
+    enemy_factory->AddWarrior(city);
+    delete city;
+
+    enemy_warrior = enemy_factory->list_combat_unit[0];
+    EXPECT_NE(enemy_warrior, nullptr);
+
+    vec.pop_back();
+    enemy_warrior->NewTurn();
+    enemy_warrior->Attack(vec);
+    EXPECT_EQ(my_warrior->health, my_warrior->MAX_HEALTH - 2*enemy_damage);
+    EXPECT_EQ(enemy_warrior->health, enemy_warrior->MAX_HEALTH);
+
+    vec.push_back(Direction::Down);
+    enemy_warrior->Attack(vec);
+    EXPECT_EQ(my_warrior->health, my_warrior->MAX_HEALTH - 2*enemy_damage);
+    EXPECT_EQ(enemy_warrior->health, enemy_warrior->MAX_HEALTH);
+
+    int enemy_attack = 2 * enemy_damage;
+    vec[0] = Direction::Up;
+
+    while(my_warrior->health > enemy_warrior->damage) {
+        enemy_warrior->Attack(vec);
+        enemy_attack += enemy_warrior->damage;
+        EXPECT_EQ(my_warrior->health, my_warrior->MAX_HEALTH - enemy_attack);
+        enemy_warrior->NewTurn();
+    }
+
+    enemy_warrior->Attack(vec);
+
+    EXPECT_EQ(my_factory->list_combat_unit[0], nullptr);
+    EXPECT_EQ(map->combat(enemy_warrior_location), nullptr);
+    EXPECT_EQ(map->combat(my_warrior_location), enemy_warrior);
+
     delete my_factory;
     delete enemy_factory;
     delete map;
