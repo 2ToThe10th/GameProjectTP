@@ -12,13 +12,23 @@ std::string Unit::Info() {
 }
 
 Unit::Unit(Player which, Race race, int health, Location city_location, Map *map, unsigned int id) :
-        which(which), race(race), MAX_HEALTH(health), health(health), location(city_location), map(map), id(id) {}
+           location(city_location), map(map), MAX_HEALTH(health), health(health), which(which), id(id), race(race) {}
 
 Location Unit::GetLocation() const {
     return location;
 }
 
 void Unit::NewTurn() {
-    already_move = false;
+    if(frozen) {
+        frozen = false;
+        already_move = true;
+    }
+    else {
+        already_move = false;
+    }
+}
+
+void Unit::Froze() {
+    frozen = true;
 }
 

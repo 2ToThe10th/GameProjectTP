@@ -621,9 +621,215 @@ TEST(Archer, Attack) {
 
     vec.push_back(Direction::Left);
 
+    my_archer->Attack(vec);
+    EXPECT_NE(map->worker(opponent_unit_location), nullptr);
+
     my_archer->NewTurn();
     my_archer->Attack(vec);
     EXPECT_EQ(map->worker(opponent_unit_location), nullptr);
+
+    delete my_factory;
+    delete enemy_factory;
+    delete map;
+}
+
+void create_9_unit(UnitFactory* enemy_factory, Location location_for_enemy) {
+    auto city = new City(location_for_enemy);
+    enemy_factory->AddWarrior(city);
+    delete city;
+    city = new City(location_for_enemy.Direction(Direction::Right));
+    enemy_factory->AddWarrior(city);
+    delete city;
+    city = new City(location_for_enemy.Direction(Direction::Left));
+    enemy_factory->AddWarrior(city);
+    delete city;
+    city = new City(location_for_enemy.Direction(Direction::Up));
+    enemy_factory->AddWarrior(city);
+    delete city;
+    city = new City(location_for_enemy.Direction(Direction::Down));
+    enemy_factory->AddWarrior(city);
+    delete city;
+    city = new City(location_for_enemy.Direction(Direction::Right).Direction(Direction::Up));
+    enemy_factory->AddWarrior(city);
+    delete city;
+    city = new City(location_for_enemy.Direction(Direction::Right).Direction(Direction::Down));
+    enemy_factory->AddWarrior(city);
+    delete city;
+    city = new City(location_for_enemy.Direction(Direction::Left).Direction(Direction::Up));
+    enemy_factory->AddWarrior(city);
+    delete city;
+    city = new City(location_for_enemy.Direction(Direction::Left).Direction(Direction::Down));
+    enemy_factory->AddWarrior(city);
+    delete city;
+}
+
+TEST(WaterWizard, Attack) {
+    Money money;
+    money.Add(11700, 11500 , 12100);
+    auto map = new Map();
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
+    Unit::opponent_unit_factory = enemy_factory;
+
+    Location location_for_enemy = Location(4, 5);
+
+    create_9_unit(enemy_factory, location_for_enemy);
+
+    auto my_factory = new UnitFactory(Player::Me, map, money, Race::Water);
+    Unit::my_unit_factory = my_factory;
+
+    Location location_for_wizard = location_for_enemy.Direction(Direction::Up).Direction(Direction::Up).Direction(Direction::Right);
+
+    auto city = new City(location_for_wizard);
+    city->BuildArcherTower(money);
+    city->BuildWizardTower(money);
+    my_factory->AddWizard(city);
+    delete city;
+
+    auto my_wizard = my_factory->list_combat_unit[0];
+
+    my_wizard->NewTurn();
+    vector<Direction> to_attack = {Direction::Down, Direction::Down, Direction::Left};
+    my_wizard->Attack(to_attack);
+
+    enemy_factory->list_combat_unit[3]->NewTurn();
+    enemy_factory->list_combat_unit[3]->Go(Direction::Up);
+    EXPECT_EQ(map->combat(location_for_enemy.Direction(Direction::Up)), nullptr);
+
+    auto enemy_unit = enemy_factory->list_combat_unit[0];
+    EXPECT_EQ(enemy_unit->health, enemy_unit->MAX_HEALTH - my_wizard->damage);
+    enemy_unit->NewTurn();
+    enemy_unit->Go(Direction::Up);
+    EXPECT_EQ(map->combat(location_for_enemy), enemy_unit);
+    enemy_unit->NewTurn();
+    enemy_unit->Go(Direction::Up);
+    EXPECT_EQ(map->combat(location_for_enemy.Direction(Direction::Up)), enemy_unit);
+
+    for(int index = 1; index < 9; ++index) {
+        EXPECT_EQ(enemy_factory->list_combat_unit[index]->health, enemy_factory->list_combat_unit[index]->MAX_HEALTH);
+    }
+
+    delete my_factory;
+    delete enemy_factory;
+    delete map;
+}
+
+TEST(EarthWizard, Attack) {
+    Money money;
+    money.Add(11700, 11500 , 12100);
+    auto map = new Map();
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
+    Unit::opponent_unit_factory = enemy_factory;
+
+    Location location_for_enemy = Location(4, 5);
+
+    create_9_unit(enemy_factory, location_for_enemy);
+
+    auto my_factory = new UnitFactory(Player::Me, map, money, Race::Earth);
+    Unit::my_unit_factory = my_factory;
+
+    Location location_for_wizard = location_for_enemy.Direction(Direction::Up).Direction(Direction::Up).Direction(Direction::Right);
+
+    auto city = new City(location_for_wizard);
+    city->BuildArcherTower(money);
+    city->BuildWizardTower(money);
+    my_factory->AddWizard(city);
+    delete city;
+
+    auto my_wizard = my_factory->list_combat_unit[0];
+
+    my_wizard->NewTurn();
+    vector<Direction> to_attack = {Direction::Down, Direction::Down, Direction::Left};
+    my_wizard->Attack(to_attack);
+
+    EXPECT_EQ(enemy_factory->list_combat_unit[0]->health, enemy_factory->list_combat_unit[0]->MAX_HEALTH - my_wizard->damage);
+
+    for(int index = 1; index < 5; ++index) {
+        EXPECT_EQ(enemy_factory->list_combat_unit[index]->health, enemy_factory->list_combat_unit[index]->MAX_HEALTH - my_wizard->damage / 2);
+    }
+
+    for(int index = 5; index < 9; ++index) {
+        EXPECT_EQ(enemy_factory->list_combat_unit[index]->health, enemy_factory->list_combat_unit[index]->MAX_HEALTH);
+    }
+
+    delete my_factory;
+    delete enemy_factory;
+    delete map;
+}
+
+TEST(AirWizard, Attack) {
+    Money money;
+    money.Add(11700, 11500 , 12100);
+    auto map = new Map();
+
+    Location location_for_enemy = Location(4, 5);
+
+    auto my_factory = new UnitFactory(Player::Me, map, money, Race::Air);
+    Unit::my_unit_factory = my_factory;
+
+    Location location_for_wizard = location_for_enemy.Direction(Direction::Up).Direction(Direction::Up).Direction(Direction::Right);
+
+    auto city = new City(location_for_wizard);
+    city->BuildArcherTower(money);
+    city->BuildWizardTower(money);
+    my_factory->AddWizard(city);
+    delete city;
+
+    create_9_unit(my_factory, location_for_enemy);
+
+    auto my_wizard = my_factory->list_combat_unit[0];
+
+    my_factory->list_combat_unit[1]->health -= my_wizard->damage + 5;
+
+    my_wizard->NewTurn();
+    vector<Direction> to_attack = {Direction::Down, Direction::Down, Direction::Left};
+    my_wizard->Attack(to_attack);
+
+    EXPECT_EQ(my_factory->list_combat_unit[1]->health, my_factory->list_combat_unit[1]->MAX_HEALTH - 5);
+
+    my_wizard->NewTurn();
+    my_wizard->Attack(to_attack);
+
+    for(int index = 1; index < 10; ++index) {
+        EXPECT_EQ(my_factory->list_combat_unit[index]->health, my_factory->list_combat_unit[index]->MAX_HEALTH);
+    }
+
+    delete my_factory;
+    delete map;
+}
+
+TEST(FireWizard, Attack) {
+    Money money;
+    money.Add(11700, 11500 , 12100);
+    auto map = new Map();
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Earth);
+    Unit::opponent_unit_factory = enemy_factory;
+
+    Location location_for_enemy = Location(4, 5);
+
+    create_9_unit(enemy_factory, location_for_enemy);
+
+    auto my_factory = new UnitFactory(Player::Me, map, money, Race::Fire);
+    Unit::my_unit_factory = my_factory;
+
+    Location location_for_wizard = location_for_enemy.Direction(Direction::Up).Direction(Direction::Up).Direction(Direction::Right);
+
+    auto city = new City(location_for_wizard);
+    city->BuildArcherTower(money);
+    city->BuildWizardTower(money);
+    my_factory->AddWizard(city);
+    delete city;
+
+    auto my_wizard = my_factory->list_combat_unit[0];
+
+    my_wizard->NewTurn();
+    vector<Direction> to_attack = {Direction::Down, Direction::Down, Direction::Left};
+    my_wizard->Attack(to_attack);
+
+    EXPECT_EQ(enemy_factory->list_combat_unit[0]->health, enemy_factory->list_combat_unit[0]->MAX_HEALTH);
+
+    for(int index = 1; index < 9; ++index) {
+        EXPECT_EQ(enemy_factory->list_combat_unit[index]->health, enemy_factory->list_combat_unit[index]->MAX_HEALTH - my_wizard->damage);
+    }
 
     delete my_factory;
     delete enemy_factory;
@@ -898,7 +1104,7 @@ TEST(WaterFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 3);
 
-    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 90");
+    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 50");
 
     sample = "";
     sample += "Combat\n";
@@ -910,7 +1116,7 @@ TEST(WaterFactory, add) {
             } else if(i == 3 && j == 8) {
                 sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 75 of MAX_HEALTH: 75 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
             } else if(i == 9 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 90\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 150 of MAX_HEALTH: 150 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 50\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1224,7 +1430,7 @@ TEST(EarthFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 3);
 
-    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 170 of MAX_HEALTH: 170 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 70");
+    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 170 of MAX_HEALTH: 170 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 30");
 
     sample = "";
     sample += "Combat\n";
@@ -1236,7 +1442,7 @@ TEST(EarthFactory, add) {
             } else if(i == 3 && j == 8) {
                 sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 90 of MAX_HEALTH: 90 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 40\n";
             } else if(i == 9 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 170 of MAX_HEALTH: 170 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 70\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 170 of MAX_HEALTH: 170 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 30\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1550,7 +1756,7 @@ TEST(AirFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 3);
 
-    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 130 of MAX_HEALTH: 130 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 110");
+    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 140 of MAX_HEALTH: 140 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 70");
 
     sample = "";
     sample += "Combat\n";
@@ -1562,7 +1768,7 @@ TEST(AirFactory, add) {
             } else if(i == 3 && j == 8) {
                 sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 60 of MAX_HEALTH: 60 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 55\n";
             } else if(i == 9 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 130 of MAX_HEALTH: 130 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 110\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 140 of MAX_HEALTH: 140 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 70\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }
@@ -1876,7 +2082,7 @@ TEST(FireFactory, add) {
 
     EXPECT_EQ(factory->list_combat_unit.size(), 3);
 
-    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 160 of MAX_HEALTH: 160 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 80");
+    EXPECT_EQ(factory->list_combat_unit[2]->Info(), "Wizard health: 160 of MAX_HEALTH: 160 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 15");
 
     sample = "";
     sample += "Combat\n";
@@ -1888,7 +2094,7 @@ TEST(FireFactory, add) {
             } else if(i == 3 && j == 8) {
                 sample += to_string(i) + " " + to_string(j) + " " + "Archer health: 70 of MAX_HEALTH: 70 location:  x:3 y:8 already_move: 1 frozen: 0 damage: 50\n";
             } else if(i == 9 && j == 8) {
-                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 160 of MAX_HEALTH: 160 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 80\n";
+                sample += to_string(i) + " " + to_string(j) + " " + "Wizard health: 160 of MAX_HEALTH: 160 location:  x:9 y:8 already_move: 1 frozen: 0 damage: 15\n";
             } else {
                 sample += to_string(i) + " " + to_string(j) + " " + "nullptr\n";
             }

@@ -32,13 +32,15 @@ void Archer::Attack(std::vector<Direction> &where_attack) {
         return;
     }
     if(map->combat(location_to_attack) == nullptr || map->combat(location_to_attack)->which == which) {
-        if(map->colonist(location_to_attack) != nullptr) {
+        if(map->colonist(location_to_attack) != nullptr && map->colonist(location_to_attack)->which != which) {
             map->colonist(location_to_attack)->health = 0;
             delete map->colonist(location_to_attack);
+            already_move = true;
         }
-        else if(map->worker(location_to_attack) != nullptr) {
+        else if(map->worker(location_to_attack) != nullptr && map->worker(location_to_attack)->which != which) {
             map->worker(location_to_attack)->health = 0;
             delete map->worker(location_to_attack);
+            already_move = true;
         } else {
             std::cout << "No enemy unit on field to attack" << std::endl;
         }

@@ -29,6 +29,7 @@ public:
     virtual void Go(Direction where) = 0;
 
     void NewTurn();
+    void Froze();
     Location GetLocation() const;
 };
 

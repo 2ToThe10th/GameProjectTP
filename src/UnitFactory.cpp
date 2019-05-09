@@ -177,19 +177,19 @@ void UnitFactory::AddWizard(City* where) {
     switch (race) {
         case Water:
             health = 150;
-            damage = 90;
+            damage = 50;
             break;
         case Earth:
             health = 170;
-            damage = 70;
+            damage = 30;
             break;
         case Air:
-            health = 130;
-            damage = 110;
+            health = 140;
+            damage = 70;
             break;
         case Fire:
             health = 160;
-            damage = 80;
+            damage = 15;
             break;
     }
 
