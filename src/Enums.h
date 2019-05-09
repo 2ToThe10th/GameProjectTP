@@ -20,4 +20,11 @@ enum Race {
     Air
 };
 
+enum Resource {
+    Nothing,
+    Gold,
+    Silver,
+    Wood
+};
+
 #endif //GAME_ENUMS_H

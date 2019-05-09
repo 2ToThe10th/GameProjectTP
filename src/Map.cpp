@@ -1,5 +1,7 @@
 #include <string>
 #include <cassert>
+#include <random>
+#include <ctime>
 #include "Map.h"
 #include "CombatUnit.h"
 #include "Colonist.h"
@@ -96,3 +98,39 @@ City*& Map::city(Location location) {
     assert(location.IsOnField());
     return map_city[location.x][location.y];
 }
+
+Resource Map::resource(Location location) {
+    assert(location.IsOnField());
+    return map_resource[location.x][location.y];
+}
+
+void Map::Generate() {
+    // ____ |______
+    // |    |
+    // |
+
+    std::mt19937 generate_random(time(nullptr));
+
+    for(int i = 0; i < MAX_HEIGHT; ++i) {
+        for(int j = 0; j < MAX_WIDTH / 2; ++j) {
+            int new_random = generate_random() % 100;
+
+            if(new_random < GOLD) {
+                map_resource[i][j] = Resource::Gold;
+            }
+            else if(new_random < GOLD + SILVER) {
+                map_resource[i][j] = Resource::Silver;
+            }
+            else if(new_random < GOLD + SILVER + WOOD) {
+                map_resource[i][j] = Resource::Wood;
+            }
+            else {
+                map_resource[i][j] = Resource::Nothing;
+            }
+
+            map_resource[i][MAX_HEIGHT - j - 1] = map_resource[i][j];
+        }
+    }
+
+}
+

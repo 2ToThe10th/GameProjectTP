@@ -4,15 +4,22 @@
 #include "Enums.h"
 #include "Location.h"
 #include "Money.h"
+#include "CityFactory.h"
+
+class CityFactory;
 
 class City {
 private:
     bool exist_archer_tower = false;
     bool exist_wizard_tower = false;
-    bool something_is_building = false;
 public:
-    Location location;
-    City(Location location);
+    static CityFactory* my_city_factory;
+    static CityFactory* opponent_city_factory;
+
+    unsigned int id = -1;
+    Player which;
+    const Location location;
+    explicit City(Location location);
 
     void BuildArcherTower(Money& money);
     void BuildWizardTower(Money& money);

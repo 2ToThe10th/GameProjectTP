@@ -2,6 +2,7 @@
 #include <iostream>
 #include "CityFactory.h"
 #include "Map.h"
+#include "UnitFactory.h"
 
 using std::string;
 
@@ -35,8 +36,11 @@ void CityFactory::AddCity(const Colonist* colonist) {
         return;
     }
 
-    cities.push_back(new City(colonist->GetLocation()));
-    map->city(colonist->GetLocation()) = cities.back();
+    unsigned int new_city_id = PlaceToInsert(cities);
+    cities[new_city_id] = new City(colonist->GetLocation());
+    map->city(colonist->GetLocation()) = cities[new_city_id];
+    cities[new_city_id]->id = new_city_id;
+    cities[new_city_id]->which = which_city_factory;
 
     delete colonist;
 }

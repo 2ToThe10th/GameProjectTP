@@ -3,6 +3,9 @@
 #include "Colonist.h"
 #include "Map.h"
 #include "UnitFactory.h"
+#include "Unit.h"
+#include "City.h"
+#include "CityFactory.h"
 
 using std::to_string;
 
@@ -63,6 +66,28 @@ void CombatUnit::Go(Direction where) {
     map->combat(new_location) = map->combat(location);
     map->combat(location) = nullptr;
     location = new_location;
+
+    if(map->city(location) != nullptr && map->city(location)->which != which) {
+        auto attacked_city = map->city(location);
+
+        CityFactory* my_city_factory = nullptr;
+        CityFactory* opponent_city_factory = nullptr;
+
+        if(which == Player::Me) {
+            my_city_factory = City::my_city_factory;
+            opponent_city_factory = City::opponent_city_factory;
+        }
+        else {
+            opponent_city_factory = City::my_city_factory;
+            my_city_factory = City::opponent_city_factory;
+        }
+        opponent_city_factory->cities[attacked_city->id] = nullptr;
+        unsigned int new_id = PlaceToInsert(my_city_factory->cities);
+        my_city_factory->cities[new_id] = attacked_city;
+        attacked_city->id = new_id;
+        attacked_city->which = which;
+    }
+
     already_move = true;
 }
 

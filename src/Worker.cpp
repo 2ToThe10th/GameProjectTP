@@ -34,7 +34,37 @@ void Worker::Go(Direction where) {
     map->worker(new_location) = map->worker(location);
     map->worker(location) = nullptr;
     location = new_location;
+
+    if(map->city(location) != nullptr && map->city(location)->which == which) {
+        money->Add(cary_gold, cary_silver, cary_wood);
+        cary_gold = 0;
+        cary_silver = 0;
+        cary_wood = 0;
+    }
+
     already_move = true;
+}
+
+void Worker::Mine() {
+    if(cary_gold > 0 || cary_silver > 0 || cary_wood > 0) {
+        std::cout << "Can not mine resource because this worker already care some" << std::endl;
+        return;
+    }
+
+    if(map->resource(location) == Resource::Nothing) {
+        std::cout << "No resources here" << std::endl;
+        return;
+    }
+
+    if(map->resource(location) == Resource::Gold) {
+        cary_gold = 100;
+    }
+    else if(map->resource(location) == Resource::Silver) {
+        cary_silver = 100;
+    }
+    else if(map->resource(location) == Resource::Wood) {
+        cary_wood = 100;
+    }
 }
 
 Worker::~Worker() {

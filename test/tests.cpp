@@ -337,7 +337,7 @@ TEST(Worker, Go) {
 
 TEST(CombatUnit, Go) {
     Money money;
-    money.Add(1700, 1500 , 2100);
+    money.Add(11700, 11500 , 12100);
     auto map = new Map();
     auto factory = new UnitFactory(Player::Me, map, money, Race::Fire);
     Unit::my_unit_factory = factory;
@@ -441,6 +441,74 @@ TEST(CombatUnit, Go) {
     EXPECT_EQ(enemy_factory->list_worker[0], nullptr);
     EXPECT_EQ(factory->list_worker.size(), 2);
     EXPECT_EQ(factory->list_worker[1]->which, Player::Me);
+
+    delete factory;
+    delete enemy_factory;
+    delete map;
+}
+
+TEST(CombatUnit, AttackCity) {
+    Money money;
+    money.Add(11700, 11500 , 12100);
+    auto map = new Map();
+    auto factory = new UnitFactory(Player::Me, map, money, Race::Fire);
+    Unit::my_unit_factory = factory;
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, money, Race::Air);
+    Unit::opponent_unit_factory = enemy_factory;
+    auto my_city_factory = new CityFactory(Player::Me, map);
+    City::my_city_factory = my_city_factory;
+    auto opponent_city_factory = new CityFactory(Player::Opponent, map);
+    City::opponent_city_factory = opponent_city_factory;
+
+    Location my_city_location(3, 14);
+
+    auto city = new City(my_city_location);
+    factory->AddColonist(city);
+    delete city;
+    my_city_factory->AddCity(factory->list_colonist[0]);
+    EXPECT_EQ(factory->list_colonist[0], nullptr);
+    auto my_city = my_city_factory->cities[0];
+    my_city->BuildArcherTower(money);
+    my_city->BuildWizardTower(money);
+    factory->AddWizard(my_city);
+
+    auto my_wizard = factory->list_combat_unit[0];
+
+    Location opponent_city_location = my_city_location.Direction(Direction::Up).Direction(Direction::Right);
+
+    city = new City(opponent_city_location);
+    enemy_factory->AddColonist(city);
+    delete city;
+    opponent_city_factory->AddCity(enemy_factory->list_colonist[0]);
+    EXPECT_EQ(enemy_factory->list_colonist[0], nullptr);
+    auto opponent_city = opponent_city_factory->cities[0];
+    opponent_city->BuildArcherTower(money);
+    opponent_city->BuildWizardTower(money);
+    enemy_factory->AddWizard(opponent_city);
+
+    auto enemy_wizard = enemy_factory->list_combat_unit[0];
+
+    enemy_wizard->NewTurn();
+    enemy_wizard->Go(Direction::Down);
+    my_wizard->NewTurn();
+    my_wizard->Go(Direction::Up);
+    my_wizard->NewTurn();
+    my_wizard->Go(Direction::Right);
+
+    EXPECT_EQ(my_city_factory->cities.size(), 2);
+    EXPECT_EQ(my_city_factory->cities[0], my_city);
+    EXPECT_EQ(my_city_factory->cities[1], opponent_city);
+    EXPECT_EQ(opponent_city_factory->cities.size(), 1);
+    EXPECT_EQ(opponent_city_factory->cities[0], nullptr);
+
+    enemy_wizard->NewTurn();
+    enemy_wizard->Go(Direction::Left);
+
+    EXPECT_EQ(my_city_factory->cities.size(), 2);
+    EXPECT_EQ(my_city_factory->cities[0], nullptr);
+    EXPECT_EQ(my_city_factory->cities[1], opponent_city);
+    EXPECT_EQ(opponent_city_factory->cities.size(), 1);
+    EXPECT_EQ(opponent_city_factory->cities[0], my_city);
 
     delete factory;
     delete enemy_factory;
@@ -836,7 +904,7 @@ TEST(FireWizard, Attack) {
     delete map;
 }
 
-TEST(WaterFactory, add) {
+TEST(WaterFactory, Add) {
 
     Money money;
 
@@ -904,7 +972,9 @@ TEST(WaterFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 0);
 
-    new_city->location = Location(7,8);
+    delete new_city;
+
+    new_city = new City(Location(7,8));
 
     factory->AddWorker(new_city);
 
@@ -1014,8 +1084,9 @@ TEST(WaterFactory, add) {
 
     //test Archer
 
+    delete new_city;
 
-    new_city->location = Location(3, 8);
+    new_city = new City(Location(3, 8));
 
     factory->AddArcher(new_city);
 
@@ -1090,12 +1161,15 @@ TEST(WaterFactory, add) {
 
     //test Wizard
 
-    new_city->location = Location(9, 8);
+    delete new_city;
+
+    new_city = new City(Location(9, 8));
 
     factory->AddWizard(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
+    new_city->BuildArcherTower(money);
     new_city->BuildWizardTower(money);
 
     EXPECT_EQ(new_city->IsWizardTowerExist(), 1);
@@ -1162,7 +1236,7 @@ TEST(WaterFactory, add) {
     delete new_city;
 }
 
-TEST(EarthFactory, add) {
+TEST(EarthFactory, Add) {
 
     Money money;
 
@@ -1230,7 +1304,9 @@ TEST(EarthFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 0);
 
-    new_city->location = Location(7,8);
+    delete new_city;
+
+    new_city = new City(Location(7,8));
 
     factory->AddWorker(new_city);
 
@@ -1341,7 +1417,9 @@ TEST(EarthFactory, add) {
     //test Archer
 
 
-    new_city->location = Location(3, 8);
+    delete new_city;
+
+    new_city = new City(Location(3, 8));
 
     factory->AddArcher(new_city);
 
@@ -1416,12 +1494,15 @@ TEST(EarthFactory, add) {
 
     //test Wizard
 
-    new_city->location = Location(9, 8);
+    delete new_city;
+
+    new_city = new City(Location(9, 8));
 
     factory->AddWizard(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
+    new_city->BuildArcherTower(money);
     new_city->BuildWizardTower(money);
 
     EXPECT_EQ(new_city->IsWizardTowerExist(), 1);
@@ -1488,7 +1569,7 @@ TEST(EarthFactory, add) {
     delete new_city;
 }
 
-TEST(AirFactory, add) {
+TEST(AirFactory, Add) {
 
     Money money;
 
@@ -1556,7 +1637,9 @@ TEST(AirFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 0);
 
-    new_city->location = Location(7,8);
+    delete new_city;
+
+    new_city = new City(Location(7,8));
 
     factory->AddWorker(new_city);
 
@@ -1667,7 +1750,9 @@ TEST(AirFactory, add) {
     //test Archer
 
 
-    new_city->location = Location(3, 8);
+    delete new_city;
+
+    new_city = new City(Location(3, 8));
 
     factory->AddArcher(new_city);
 
@@ -1742,12 +1827,15 @@ TEST(AirFactory, add) {
 
     //test Wizard
 
-    new_city->location = Location(9, 8);
+    delete new_city;
+
+    new_city = new City(Location(9, 8));
 
     factory->AddWizard(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
+    new_city->BuildArcherTower(money);
     new_city->BuildWizardTower(money);
 
     EXPECT_EQ(new_city->IsWizardTowerExist(), 1);
@@ -1814,7 +1902,7 @@ TEST(AirFactory, add) {
     delete new_city;
 }
 
-TEST(FireFactory, add) {
+TEST(FireFactory, Add) {
 
     Money money;
 
@@ -1882,7 +1970,9 @@ TEST(FireFactory, add) {
 
     EXPECT_EQ(factory->list_worker.size(), 0);
 
-    new_city->location = Location(7,8);
+    delete new_city;
+
+    new_city = new City(Location(7,8));
 
     factory->AddWorker(new_city);
 
@@ -1993,7 +2083,9 @@ TEST(FireFactory, add) {
     //test Archer
 
 
-    new_city->location = Location(3, 8);
+    delete new_city;
+
+    new_city = new City(Location(3, 8));
 
     factory->AddArcher(new_city);
 
@@ -2068,12 +2160,15 @@ TEST(FireFactory, add) {
 
     //test Wizard
 
-    new_city->location = Location(9, 8);
+    delete new_city;
+
+    new_city = new City(Location(9, 8));
 
     factory->AddWizard(new_city);
 
     EXPECT_EQ(factory->list_combat_unit.size(), 2);
 
+    new_city->BuildArcherTower(money);
     new_city->BuildWizardTower(money);
 
     EXPECT_EQ(new_city->IsWizardTowerExist(), 1);
@@ -2138,4 +2233,21 @@ TEST(FireFactory, add) {
     delete factory;
     delete map;
     delete new_city;
+}
+
+TEST(Map, Generate) {
+    auto map = new Map();
+    map->Generate();
+
+    for(int i = 0; i < Map::MAX_HEIGHT; ++i) {
+        for(int j = 0; j < Map::MAX_WIDTH; ++j) {
+            cout << map->resource(Location(i, j)) << ' ';
+            if(j < Map::MAX_WIDTH / 2) {
+                EXPECT_EQ(map->resource(Location(i, j)), map->resource(Location(i, Map::MAX_WIDTH - 1 - j)));
+            }
+        }
+        cout << '\n';
+    }
+
+    delete map;
 }

@@ -74,6 +74,7 @@ int Game() {
     auto map = new Map();
 
     Money money;
+    Worker::money = &money;
 
     cout << "Choose race(Water(w),Fire(f),Earth(e),Air(a)):" << endl;
 
@@ -162,7 +163,8 @@ int Game() {
     cout << my_city_factory->Info() << endl;
     cout << opponent_city_factory->Info() << endl;
 
-    //TODO: generation of resources
+    map->Generate();
+
 
 
 //delete part

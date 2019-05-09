@@ -4,6 +4,9 @@
 using std::cout;
 using std::endl;
 
+CityFactory* City::my_city_factory = nullptr;
+CityFactory* City::opponent_city_factory = nullptr;
+
 City::City(Location location): location(location) {}
 
 
