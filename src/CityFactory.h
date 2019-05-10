@@ -20,7 +20,7 @@ public:
     CityFactory(Player which, Map* map);
     ~CityFactory();
 
-    void AddCity(const Colonist* colonist);
+    unsigned int AddCity(Colonist* colonist);
 
     std::string Info();
 };

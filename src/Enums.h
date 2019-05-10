@@ -27,4 +27,17 @@ enum Resource {
     Wood
 };
 
+enum UnitType {
+    WorkerType,
+    ColonistType,
+    WarriorType,
+    ArcherType,
+    WizardType
+};
+
+enum TowerType {
+    ArcherTower,
+    WizardTower
+};
+
 #endif //GAME_ENUMS_H

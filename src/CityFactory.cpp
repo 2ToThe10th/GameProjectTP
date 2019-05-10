@@ -3,6 +3,7 @@
 #include "CityFactory.h"
 #include "Map.h"
 #include "UnitFactory.h"
+#include "Colonist.h"
 
 using std::string;
 
@@ -24,16 +25,16 @@ string CityFactory::Info() {
     return str_which + " City";
 }
 
-void CityFactory::AddCity(const Colonist* colonist) {
+unsigned int CityFactory::AddCity(Colonist* colonist) {
 
     if(colonist == nullptr) {
         std::cout << "This colonist is already die. Please, choose another one" << std::endl;
-        return;
+        return 1;
     }
 
     if(map->city(colonist->GetLocation()) != nullptr) {
         std::cout << "Colonist now in the city. Please, move him." << std::endl;
-        return;
+        return 1;
     }
 
     unsigned int new_city_id = PlaceToInsert(cities);
@@ -43,6 +44,7 @@ void CityFactory::AddCity(const Colonist* colonist) {
     cities[new_city_id]->which = which_city_factory;
 
     delete colonist;
+    return 0;
 }
 
 CityFactory::~CityFactory() {

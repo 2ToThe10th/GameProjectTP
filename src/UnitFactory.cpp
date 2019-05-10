@@ -38,7 +38,7 @@ std::string UnitFactory::Info() {
     return "";
 }
 
-UnitFactory::UnitFactory(enum::Player which, Map* map, Money& money, Race race): which(which), map(map), money(money), race(race) {}
+UnitFactory::UnitFactory(enum::Player which, Map* map, Money& money, Race race): which(which), map(map), race(race), money(money) {}
 
 UnitFactory::~UnitFactory() {
     for(CombatUnit* i: list_combat_unit) {
@@ -55,17 +55,17 @@ UnitFactory::~UnitFactory() {
     }
 }
 
-void UnitFactory::AddWarrior(City* where) {
+unsigned int UnitFactory::AddWarrior(City* where) {
     if(map->combat(where->location) != nullptr) {
         cout << "Other combat unit is already there" << endl;
         cout << map->combat(where->location)->Info() << endl;
-        return;
+        return 1;
     }
 
     if(!money.Take(Warrior::cost_wood, Warrior::cost_iron, Warrior::cost_gold)) {
         cout << "You don't have enough money" << endl;
         cout << money.Info() << endl;
-        return;
+        return 1;
     }
 
     int health = 0;
@@ -98,25 +98,25 @@ void UnitFactory::AddWarrior(City* where) {
 
     map->combat(where->location) = new_warrior;
 
-    //TODO: send message about building unit to opponent
+    return 0;
 }
 
-void UnitFactory::AddArcher(City* where) {
+unsigned int  UnitFactory::AddArcher(City* where) {
     if(map->combat(where->location) != nullptr) {
         cout << "Other combat unit is already there" << endl;
         cout << map->combat(where->location)->Info() << endl;
-        return;
+        return 1;
     }
 
     if(!where->IsArcherTowerExist()) {
         cout << "Build Archer Town first" << endl;
-        return;
+        return 1;
     }
 
     if(!money.Take(Archer::cost_wood, Archer::cost_iron, Archer::cost_gold)) {
         cout << "You don't have enough money" << endl;
         cout << money.Info() << endl;
-        return;
+        return 1;
     }
 
     int health = 0;
@@ -150,25 +150,25 @@ void UnitFactory::AddArcher(City* where) {
 
     map->combat(where->location) = new_archer;
 
-    //TODO: send message about building unit to opponent
+    return 0;
 }
 
-void UnitFactory::AddWizard(City* where) {
+unsigned int  UnitFactory::AddWizard(City* where) {
     if(map->combat(where->location) != nullptr) {
         cout << "Other combat unit is already there" << endl;
         cout << map->combat(where->location)->Info() << endl;
-        return;
+        return 1;
     }
 
     if(!where->IsWizardTowerExist()) {
         cout << "Build Wizard Town first" << endl;
-        return;
+        return 1;
     }
 
     if(!money.Take(Wizard::cost_wood, Wizard::cost_iron, Wizard::cost_gold)) {
         cout << "You don't have enough money" << endl;
         cout << money.Info() << endl;
-        return;
+        return 1;
     }
 
     int health = 0;
@@ -201,20 +201,20 @@ void UnitFactory::AddWizard(City* where) {
 
     map->combat(where->location) = new_wizard;
 
-    //TODO: send message about building unit to opponent
+    return 0;
 }
 
 
-void UnitFactory::AddColonist(City* where) {
+unsigned int  UnitFactory::AddColonist(City* where) {
     if(map->colonist(where->location) != nullptr || map->worker(where->location) != nullptr) {
         cout << "Other military unit is already there" << endl;
-        return;
+        return 1;
     }
 
     if(!money.Take(Colonist::cost_wood, Colonist::cost_iron, Colonist::cost_gold)) {
         cout << "You don't have enough money" << endl;
         cout << money.Info() << endl;
-        return;
+        return 1;
     }
 
     unsigned int id = PlaceToInsert<Colonist*>(list_colonist);
@@ -225,20 +225,20 @@ void UnitFactory::AddColonist(City* where) {
 
     map->colonist(where->location) = new_colonist;
 
-    //TODO: send message about building unit to opponent
+    return 0;
 }
 
-void UnitFactory::AddWorker(City* where) {
+unsigned int  UnitFactory::AddWorker(City* where) {
 
     if(map->colonist(where->location) != nullptr || map->worker(where->location) != nullptr) {
         cout << "Other military unit is already there" << endl;
-        return;
+        return 1;
     }
 
     if(!money.Take(Worker::cost_wood, Worker::cost_iron, Worker::cost_gold)) {
         cout << "You don't have enough money" << endl;
         cout << money.Info() << endl;
-        return;
+        return 1;
     }
 
     unsigned int id = PlaceToInsert<Worker*>(list_worker);
@@ -249,5 +249,5 @@ void UnitFactory::AddWorker(City* where) {
 
     map->worker(where->location) = new_worker;
 
-    //TODO: send message about building unit to opponent
+    return 0;
 }

@@ -74,7 +74,6 @@ int Game() {
     auto map = new Map();
 
     Money money;
-    Worker::money = &money;
 
     cout << "Choose race(Water(w),Fire(f),Earth(e),Air(a)):" << endl;
 

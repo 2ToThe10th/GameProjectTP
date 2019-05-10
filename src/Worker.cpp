@@ -4,8 +4,6 @@
 #include "CombatUnit.h"
 #include "UnitFactory.h"
 
-Money* Worker::money = nullptr;
-
 Worker::Worker(Player which, Race race, int health, Location city_location, Map* map, unsigned int id) :
         Unit(which, race, health, city_location, map, id) {}
 
@@ -38,7 +36,12 @@ void Worker::Go(Direction where) {
     location = new_location;
 
     if(map->city(location) != nullptr && map->city(location)->which == which) {
-        money->Add(cary_gold, cary_silver, cary_wood);
+        if(which == Player::Me) {
+            my_unit_factory->money.Add(cary_gold, cary_silver, cary_wood);
+        }
+        else {
+            opponent_unit_factory->money.Add(cary_gold, cary_silver, cary_wood);
+        }
         cary_gold = 0;
         cary_silver = 0;
         cary_wood = 0;

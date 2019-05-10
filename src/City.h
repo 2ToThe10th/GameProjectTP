@@ -21,8 +21,8 @@ public:
     const Location location;
     explicit City(Location location);
 
-    void BuildArcherTower(Money& money);
-    void BuildWizardTower(Money& money);
+    unsigned int BuildArcherTower(Money& money);
+    unsigned int BuildWizardTower(Money& money);
 
     bool IsArcherTowerExist();
     bool IsWizardTowerExist();

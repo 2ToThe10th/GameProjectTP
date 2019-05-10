@@ -6,8 +6,6 @@
 
 class Worker: public Unit {
 public:
-    static Money* money;
-
     static const int cost_wood = 50;
     static const int cost_iron = 10;
     static const int cost_gold = 0;
