@@ -4,6 +4,8 @@
 #include "CombatUnit.h"
 #include "UnitFactory.h"
 
+Money* Worker::money = nullptr;
+
 Worker::Worker(Player which, Race race, int health, Location city_location, Map* map, unsigned int id) :
         Unit(which, race, health, city_location, map, id) {}
 
