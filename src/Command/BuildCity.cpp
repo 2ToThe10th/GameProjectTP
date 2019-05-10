@@ -9,7 +9,7 @@ unsigned int BuildCity::Do() {
         unit_factory = ICommand::my_unit_factory;
     }
     else {
-        city_factory = ICommand::opponent_ciy_factory;
+        city_factory = ICommand::opponent_city_factory;
         unit_factory = ICommand::opponent_unit_factory;
 
     }

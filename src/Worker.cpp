@@ -50,15 +50,20 @@ void Worker::Go(Direction where) {
     already_move = true;
 }
 
-void Worker::Mine() {
+unsigned int Worker::Mine() {
     if(cary_gold > 0 || cary_silver > 0 || cary_wood > 0) {
         std::cout << "Can not mine resource because this worker already care some" << std::endl;
-        return;
+        return 1;
+    }
+
+    if(already_move) {
+        std::cout << "This worker already move" << std::endl;
+        return 1;
     }
 
     if(map->resource(location) == Resource::Nothing) {
         std::cout << "No resources here" << std::endl;
-        return;
+        return 1;
     }
 
     if(map->resource(location) == Resource::Gold) {
@@ -70,6 +75,8 @@ void Worker::Mine() {
     else if(map->resource(location) == Resource::Wood) {
         cary_wood = 100;
     }
+
+    return 0;
 }
 
 Worker::~Worker() {

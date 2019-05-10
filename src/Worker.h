@@ -19,7 +19,7 @@ public:
 
     std::string Info() override;
     void Go(Direction where) override;
-    void Mine();
+    unsigned int Mine();
 };
 
 

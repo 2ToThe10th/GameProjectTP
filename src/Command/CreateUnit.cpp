@@ -11,9 +11,14 @@ unsigned int CreateUnit::Do() {
         unit_factory = ICommand::my_unit_factory;
     }
     else {
-        city_factory = ICommand::opponent_ciy_factory;
+        city_factory = ICommand::opponent_city_factory;
         unit_factory = ICommand::opponent_unit_factory;
 
+    }
+
+    if(city_id < 0 || city_id >= city_factory->cities.size()) {
+        std::cout << "City with this number does not exist." << std::endl;
+        return 1;
     }
 
     switch (unit_type) {

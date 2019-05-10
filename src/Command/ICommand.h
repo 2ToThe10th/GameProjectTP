@@ -10,7 +10,7 @@ public:
     static UnitFactory* my_unit_factory;
     static UnitFactory* opponent_unit_factory;
     static CityFactory* my_city_factory;
-    static CityFactory* opponent_ciy_factory;
+    static CityFactory* opponent_city_factory;
 
     static Player which_turn;
 

@@ -228,7 +228,7 @@ unsigned int  UnitFactory::AddColonist(City* where) {
     return 0;
 }
 
-unsigned int  UnitFactory::AddWorker(City* where) {
+unsigned int UnitFactory::AddWorker(City* where) {
 
     if(map->colonist(where->location) != nullptr || map->worker(where->location) != nullptr) {
         cout << "Other military unit is already there" << endl;
