@@ -29,4 +29,18 @@ unsigned int CreateTower::Do() {
     }
 }
 
+void CreateTower::Send() {
+    string string_to_send = "createtower ";
+    switch(tower_type) {
+        case TowerType::ArcherTower:
+            string_to_send += "archer ";
+            break;
+        case TowerType::WizardTower:
+            string_to_send += "wizard ";
+            break;
+    }
+    string_to_send += std::to_string(city_id);
+    socket->Write(string_to_send);
+}
+
 

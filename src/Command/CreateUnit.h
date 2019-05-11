@@ -12,6 +12,7 @@ public:
     CreateUnit(UnitType unit_type, unsigned int city_id);
 
     unsigned int Do() override;
+    void Send() override;
 };
 
 

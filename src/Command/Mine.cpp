@@ -19,3 +19,8 @@ unsigned int Mine::Do() {
 
     return unit_factory->list_worker[worker_id]->Mine();
 }
+
+void Mine::Send() {
+    string string_to_send = "mine " + std::to_string(worker_id);
+    socket->Write(string_to_send);
+}

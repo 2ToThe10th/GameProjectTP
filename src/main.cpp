@@ -7,6 +7,7 @@
 #include "Map.h"
 #include "Command/ICommand.h"
 #include "Interpreter.h"
+#include "Graphic.h"
 
 #ifdef DEBUG
 #include <gtest/gtest.h>
@@ -76,7 +77,8 @@ int Game() {
 
     auto map = new Map();
 
-    Money money;
+    Money my_money;
+    Money opponent_money;
 
     cout << "Choose race(Water(w),Fire(f),Earth(e),Air(a)):" << endl;
 
@@ -114,7 +116,7 @@ int Game() {
         }
     }
 
-    auto my_factory = new UnitFactory(Player::Me, map, money, user_race_enum);
+    auto my_factory = new UnitFactory(Player::Me, map, my_money, user_race_enum);
 
     cout << my_factory->Info() << endl;
 
@@ -154,7 +156,7 @@ int Game() {
         return 0;
     }
 
-    auto opponent_factory = new UnitFactory(Player::Opponent, map, money, opponent_race_enum);
+    auto opponent_factory = new UnitFactory(Player::Opponent, map, opponent_money, opponent_race_enum);
 
     cout << opponent_factory->Info() << endl;
 
@@ -223,7 +225,12 @@ int Game() {
     if(which_first_turn == Player::Opponent) {
         ICommand* end = new End();
         end->Do();
+        ICommand::is_end = false;
     }
+
+    Graphic graphic(map);
+
+    graphic.Draw();
 
     while(true) {
         string string_command;
@@ -232,6 +239,7 @@ int Game() {
         }
         else {
             string_command = socket->Read();
+            cout << string_command << endl;
         }
         Interpreter interpreter(string_command);
         ICommand* command = interpreter.Translate();
@@ -239,14 +247,28 @@ int Game() {
         unsigned int command_result = command->Do();
 
         if(command_result == 0) {
-           command->Send();
+            cout << (ICommand::which_turn == Player::Me) << ' ' << ICommand::is_end << endl;
+            if((ICommand::which_turn == Player::Me && !ICommand::is_end) ||
+                    (ICommand::which_turn == Player::Opponent && ICommand::is_end)) {
+                command->Send();
+            }
+            ICommand::is_end = false;
         }
-        if(command_result && ICommand::is_end) {
-            command->Send();
+        else if(ICommand::is_end) {
+            if(ICommand::which_turn == Player::Opponent) {
+                command->Send();
+            }
             ICommand::is_end = false;
             break;
         }
-        //Graphiс
+        else {
+            continue;
+        }
+        graphic.Draw();
+        if(ICommand::which_turn == Player::Me) {
+            cout << "Your turn\n";
+        }
+        cout << "Your money:" << my_money.Info() << '\n' << "Your opponent money:" << opponent_money.Info() << endl;
     }
 
 

@@ -15,6 +15,7 @@ public:
     Go(UnitCommonType type, unsigned int unit_id, Direction where);
 
     unsigned int Do() override;
+    void Send() override;
 };
 
 

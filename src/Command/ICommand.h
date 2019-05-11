@@ -18,7 +18,7 @@ public:
     virtual ~ICommand() = default;
 
     virtual unsigned int Do() = 0;
-    virtual void Send() {};
+    virtual void Send() = 0;
     static void NewTurn();
 };
 

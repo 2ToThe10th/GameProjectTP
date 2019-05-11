@@ -77,6 +77,19 @@ unsigned int Worker::Mine() {
         cary_wood = 100;
     }
 
+    if(map->city(location) != nullptr && map->city(location)->which == which) {
+        if(which == Player::Me) {
+            my_unit_factory->money.Add(cary_gold, cary_silver, cary_wood);
+        }
+        else {
+            opponent_unit_factory->money.Add(cary_gold, cary_silver, cary_wood);
+        }
+        cary_gold = 0;
+        cary_silver = 0;
+        cary_wood = 0;
+    }
+
+    already_move = true;
     return 0;
 }
 

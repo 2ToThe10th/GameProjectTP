@@ -12,6 +12,7 @@ public:
     Attack(unsigned int combat_id, std::vector<Direction>& where);
 
     unsigned int Do() override;
+    void Send() override;
 };
 
 

@@ -6,11 +6,14 @@
 
 class CombatUnit: public Unit {
 public:
+    const CombatUnitType combat_unit_type;
     int damage;
-    explicit CombatUnit(Player which, Race race, int health, Location city_location, Map* map, int damage, unsigned int id);
+    explicit CombatUnit(Player which, Race race, int health, Location city_location, Map *map, int damage,
+                        unsigned int id,
+                        CombatUnitType combat_unit_type);
     ~CombatUnit() override;
 
-    virtual std::string Info();
+    std::string Info() override ;
     unsigned int Go(Direction where) override;
     virtual unsigned int Attack(std::vector<Direction> &where_attack) = 0;
 };

@@ -9,8 +9,10 @@
 
 using std::to_string;
 
-CombatUnit::CombatUnit(Player which, Race race, int health, Location city_location, Map* map, int damage, unsigned int id):
-        Unit::Unit(which, race, health, city_location, map, id), damage(damage) {}
+CombatUnit::CombatUnit(Player which, Race race, int health, Location city_location, Map *map, int damage,
+                       unsigned int id,
+                       CombatUnitType combat_unit_type) :
+        Unit::Unit(which, race, health, city_location, map, id), combat_unit_type(combat_unit_type), damage(damage) {}
 
 
 std::string CombatUnit::Info() {

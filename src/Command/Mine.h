@@ -11,6 +11,7 @@ public:
     Mine(unsigned int worker_id);
 
     unsigned int Do() override;
+    void Send() override;
 };
 
 

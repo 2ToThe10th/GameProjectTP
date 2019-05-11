@@ -9,6 +9,7 @@ public:
     End();
 
     unsigned int Do() override;
+    void Send() override;
 };
 
 

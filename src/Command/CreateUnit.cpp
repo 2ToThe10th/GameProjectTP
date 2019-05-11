@@ -36,3 +36,26 @@ unsigned int CreateUnit::Do() {
 
     return 1;
 }
+
+void CreateUnit::Send() {
+    string string_to_send = "createunit ";
+    switch(unit_type) {
+        case UnitType::WizardType :
+            string_to_send += "wizard ";
+            break;
+        case UnitType::ArcherType :
+            string_to_send += "archer ";
+            break;
+        case UnitType::WarriorType :
+            string_to_send += "warrior ";
+            break;
+        case UnitType::WorkerType :
+            string_to_send += "worker ";
+            break;
+        case UnitType::ColonistType :
+            string_to_send += "colonist ";
+            break;
+    }
+    string_to_send += std::to_string(city_id);
+    socket->Write(string_to_send);
+}

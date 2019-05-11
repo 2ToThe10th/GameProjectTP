@@ -24,3 +24,24 @@ unsigned int Attack::Do() {
 
     return unit_factory->list_combat_unit[combat_id]->Attack(where);
 }
+
+void Attack::Send() {
+    string string_to_send = "attack " + std::to_string(combat_id) + " ";
+    for(auto i: where) {
+        switch (i) {
+            case Direction::Up:
+                string_to_send.push_back('u');
+                break;
+            case Direction::Down:
+                string_to_send.push_back('d');
+                break;
+            case Direction::Left:
+                string_to_send.push_back('l');
+                break;
+            case Direction::Right:
+                string_to_send.push_back('r');
+                break;
+        }
+    }
+    socket->Write(string_to_send);
+}

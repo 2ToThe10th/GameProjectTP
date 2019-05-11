@@ -9,6 +9,7 @@ public:
     WrongCommand() = default;
 
     unsigned int Do() override;
+    void Send() override {};
 };
 
 

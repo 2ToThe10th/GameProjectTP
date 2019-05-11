@@ -46,4 +46,10 @@ enum UnitCommonType {
     CombatCommonType
 };
 
+enum CombatUnitType {
+    WarriorCombatType,
+    ArcherCombatType,
+    WizardCombatType
+};
+
 #endif //GAME_ENUMS_H

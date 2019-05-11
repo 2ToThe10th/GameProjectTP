@@ -24,3 +24,8 @@ unsigned int BuildCity::Do() {
 
 BuildCity::BuildCity(unsigned int colonist_id): colonist_id(colonist_id) {}
 
+void BuildCity::Send() {
+    string string_to_send = "buildcity " + std::to_string(colonist_id);
+    socket->Write(string_to_send);
+}
+

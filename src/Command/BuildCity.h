@@ -10,6 +10,7 @@ public:
     BuildCity(unsigned int colonist_id);
 
     unsigned int Do() override;
+    void Send() override;
 };
 
 #endif //GAME_BUILDCITY_H

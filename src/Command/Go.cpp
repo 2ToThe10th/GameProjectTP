@@ -42,3 +42,34 @@ unsigned int Go::Do() {
     return 1;
 }
 
+void Go::Send() {
+    string string_to_send = "go ";
+    switch (type) {
+        case UnitCommonType::WorkerCommonType:
+            string_to_send += "worker";
+            break;
+        case UnitCommonType::ColonistCommonType:
+            string_to_send += "colonist";
+            break;
+        case UnitCommonType::CombatCommonType:
+            string_to_send += "combat";
+            break;
+    }
+    string_to_send += " " + std::to_string(unit_id) + " ";
+    switch (where) {
+        case Direction::Up:
+            string_to_send.push_back('u');
+            break;
+        case Direction::Down:
+            string_to_send.push_back('d');
+            break;
+        case Direction::Left:
+            string_to_send.push_back('l');
+            break;
+        case Direction::Right:
+            string_to_send.push_back('r');
+            break;
+    }
+    socket->Write(string_to_send);
+}
+

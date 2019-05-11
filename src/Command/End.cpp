@@ -59,3 +59,8 @@ unsigned int End::Do() {
 End::End() {
     ICommand::is_end = true;
 }
+
+void End::Send() {
+    string string_to_send = "end ";
+    socket->Write(string_to_send);
+}
