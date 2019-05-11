@@ -11,15 +11,15 @@ std::string Archer::Info() {
     return "Archer " + CombatUnit::Info();
 }
 
-void Archer::Attack(std::vector<Direction> &where_attack) {
+unsigned int Archer::Attack(std::vector<Direction> &where_attack) {
 
     if(already_move) {
         std::cout << "This combat unit has already moved this turn" << std::endl;
-        return;
+        return 1;
     }
     if(where_attack.empty() || where_attack.size() > 2) {
         std::cout << "Archer can attack only fields on distance one or two" << std::endl;
-        return;
+        return 1;
     }
 
     Location location_to_attack = location;
@@ -29,7 +29,7 @@ void Archer::Attack(std::vector<Direction> &where_attack) {
 
     if(!location_to_attack.IsOnField()) {
         std::cout << "You can attack only on field" << std::endl;
-        return;
+        return 1;
     }
     if(map->combat(location_to_attack) == nullptr || map->combat(location_to_attack)->which == which) {
         if(map->colonist(location_to_attack) != nullptr && map->colonist(location_to_attack)->which != which) {
@@ -43,8 +43,9 @@ void Archer::Attack(std::vector<Direction> &where_attack) {
             already_move = true;
         } else {
             std::cout << "No enemy unit on field to attack" << std::endl;
+            return 1;
         }
-        return;
+        return 0;
     }
 
     auto enemy_unit = map->combat(location_to_attack);
@@ -55,4 +56,5 @@ void Archer::Attack(std::vector<Direction> &where_attack) {
     }
 
     already_move = true;
+    return 0;
 }

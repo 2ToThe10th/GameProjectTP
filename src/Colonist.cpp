@@ -11,24 +11,24 @@ std::string Colonist::Info() {
     return "Colonist " + Unit::Info();
 }
 
-void Colonist::Go(Direction where) {
+unsigned int Colonist::Go(Direction where) {
     Location new_location = location.Direction(where);
 
     if(already_move) {
         std::cout << "This colonist has already moved this turn" << std::endl;
-        return;
+        return 1;
     }
     if(!new_location.IsOnField()) {
         std::cout << "Units can go only in the fields" << std::endl;
-        return;
+        return 1;
     }
     if(map->colonist(new_location) != nullptr || map->worker(new_location) != nullptr) {
         std::cout << "only one military unit can be on the field" << std::endl;
-        return;
+        return 1;
     }
     if(map->combat(new_location) != nullptr && map->combat(new_location)->which != which) {
         std::cout << "You could not go to field with enemy unit by colonist" << std::endl;
-        return;
+        return 1;
     }
 
 
@@ -36,6 +36,7 @@ void Colonist::Go(Direction where) {
     map->colonist(location) = nullptr;
     location = new_location;
     already_move = true;
+    return 0;
 }
 
 Colonist::~Colonist() {

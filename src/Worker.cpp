@@ -11,24 +11,24 @@ std::string Worker::Info() {
     return "Worker " + Unit::Info();
 }
 
-void Worker::Go(Direction where) {
+unsigned int Worker::Go(Direction where) {
     Location new_location = location.Direction(where);
 
     if(already_move) {
         std::cout << "This worker has already moved this turn" << std::endl;
-        return;
+        return 1;
     }
     if(!new_location.IsOnField()) {
         std::cout << "Units can go only in the fields" << std::endl;
-        return;
+        return 1;
     }
     if(map->colonist(new_location) != nullptr || map->worker(new_location) != nullptr) {
         std::cout << "only one military unit can be on the field" << std::endl;
-        return;
+        return 1;
     }
     if(map->combat(new_location) != nullptr && map->combat(new_location)->which != which) {
         std::cout << "You could not go to field with enemy unit by worker" << std::endl;
-        return;
+        return 1;
     }
 
     map->worker(new_location) = map->worker(location);
@@ -48,6 +48,7 @@ void Worker::Go(Direction where) {
     }
 
     already_move = true;
+    return 0;
 }
 
 unsigned int Worker::Mine() {

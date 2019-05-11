@@ -26,7 +26,7 @@ public:
     virtual ~Unit() = default;
 
     virtual std::string Info();
-    virtual void Go(Direction where) = 0;
+    virtual unsigned int Go(Direction where) = 0;
 
     void NewTurn();
     void Froze();

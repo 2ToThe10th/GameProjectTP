@@ -40,4 +40,10 @@ enum TowerType {
     WizardTower
 };
 
+enum UnitCommonType {
+    WorkerCommonType,
+    ColonistCommonType,
+    CombatCommonType
+};
+
 #endif //GAME_ENUMS_H

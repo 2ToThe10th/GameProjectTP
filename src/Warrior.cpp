@@ -9,26 +9,26 @@ std::string Warrior::Info() {
     return "Warrior " + CombatUnit::Info();
 }
 
-void Warrior::Attack(std::vector<Direction>& where_attack) {
+unsigned int Warrior::Attack(std::vector<Direction> &where_attack) {
 
     if(already_move) {
         std::cout << "This combat unit has already moved this turn" << std::endl;
-        return;
+        return 1;
     }
     if(where_attack.size() != 1) {
         std::cout << "Warrior can attack only fields exactly near to him" << std::endl;
-        return;
+        return 1;
     }
 
     Location location_to_attack = location.Direction(where_attack[0]);
 
     if(!location_to_attack.IsOnField()) {
         std::cout << "You can attack only on field" << std::endl;
-        return;
+        return 1;
     }
     if(map->combat(location_to_attack) == nullptr || map->combat(location_to_attack)->which == which) {
         std::cout << "No enemy combat unit on field to attack" << std::endl;
-        return;
+        return 1;
     }
 
     auto enemy = map->combat(location_to_attack);
@@ -52,5 +52,5 @@ void Warrior::Attack(std::vector<Direction>& where_attack) {
         }
         already_move = true;
     }
-
+    return 0;
 }

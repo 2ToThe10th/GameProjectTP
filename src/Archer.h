@@ -13,7 +13,7 @@ public:
     ~Archer() override = default;
 
     std::string Info() override;
-    void Attack(std::vector<Direction>& where_attack) override;
+    unsigned int Attack(std::vector<Direction> &where_attack) override;
 };
 
 

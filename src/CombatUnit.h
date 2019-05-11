@@ -11,8 +11,8 @@ public:
     ~CombatUnit() override;
 
     virtual std::string Info();
-    void Go(Direction where) override;
-    virtual void Attack(std::vector<Direction>& where_attack) = 0;
+    unsigned int Go(Direction where) override;
+    virtual unsigned int Attack(std::vector<Direction> &where_attack) = 0;
 };
 
 

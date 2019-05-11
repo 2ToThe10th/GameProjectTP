@@ -18,7 +18,7 @@ public:
     ~Worker() override;
 
     std::string Info() override;
-    void Go(Direction where) override;
+    unsigned int Go(Direction where) override;
     unsigned int Mine();
 };
 

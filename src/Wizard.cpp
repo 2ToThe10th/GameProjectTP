@@ -12,15 +12,15 @@ std::string Wizard::Info() {
     return "Wizard " + CombatUnit::Info();
 }
 
-void Wizard::Attack(std::vector<Direction> &where_attack) {
+unsigned int Wizard::Attack(std::vector<Direction> &where_attack) {
 
     if(already_move) {
         std::cout << "This combat unit has already moved this turn" << std::endl;
-        return;
+        return 1;
     }
     if(where_attack.empty() || where_attack.size() > 3) {
         std::cout << "Wizard can use their abilities only on fields on distance between one and three" << std::endl;
-        return;
+        return 1;
     }
 
     Location location_to_attack = location;
@@ -30,7 +30,7 @@ void Wizard::Attack(std::vector<Direction> &where_attack) {
 
     if(!location_to_attack.IsOnField()) {
         std::cout << "You can attack only on field" << std::endl;
-        return;
+        return 1;
     }
 
     if(race == Race::Water) {
@@ -47,8 +47,9 @@ void Wizard::Attack(std::vector<Direction> &where_attack) {
                 already_move = true;
             } else {
                 std::cout << "No enemy unit on field to attack and froze" << std::endl;
+                return 1;
             }
-            return;
+            return 0;
         }
 
         auto enemy_unit = map->combat(location_to_attack);
@@ -109,7 +110,7 @@ void Wizard::Attack(std::vector<Direction> &where_attack) {
     else if(race == Race::Air) {
         if (map->combat(location_to_attack) == nullptr || map->combat(location_to_attack)->which != which) {
             std::cout << "No your combat unit on field to heal" << std::endl;
-            return;
+            return 1;
         }
         auto friend_unit = map->combat(location_to_attack);
         std::cout << friend_unit->health << std::endl;
@@ -144,4 +145,5 @@ void Wizard::Attack(std::vector<Direction> &where_attack) {
     }
 
     already_move = true;
+    return 0;
 }

@@ -8,6 +8,8 @@
 #include <Command/CreateTower.h>
 #include <Command/End.h>
 #include <Command/Mine.h>
+#include <Command/Go.h>
+#include <Command/Attack.h>
 #include "Location.h"
 #include "Map.h"
 #include "Money.h"
@@ -2632,5 +2634,187 @@ TEST(Command, Mine) {
     delete mine;
     delete factory;
     delete my_city_factory;
+    delete map;
+}
+
+TEST(Command, Go) {
+    Money my_money;
+    my_money.Add(11700, 11500 , 12100);
+    auto map = new Map();
+    map->Generate();
+    auto factory = new UnitFactory(Player::Me, map, my_money, Race::Fire);
+    Unit::my_unit_factory = factory;
+    auto my_city_factory = new CityFactory(Player::Me, map);
+    City::my_city_factory = my_city_factory;
+    ICommand::my_unit_factory = factory;
+    ICommand::my_city_factory = my_city_factory;
+
+    Location my_city_location(0, 0);
+
+    auto temp_city = new City(my_city_location);
+    factory->AddColonist(temp_city);
+    delete temp_city;
+
+    temp_city = new City(my_city_location.Direction(Direction::Right).Direction(Direction::Right).Direction(Direction::Right));
+    factory->AddColonist(temp_city);
+    delete temp_city;
+
+    ICommand* build_city = new BuildCity(0);
+    EXPECT_EQ(build_city->Do(), 0);
+
+    ICommand* build_city_1 = new BuildCity(1);
+    EXPECT_EQ(build_city_1->Do(), 0);
+
+    ICommand* create_worker_0 = new CreateUnit(UnitType::WorkerType, 1);
+    EXPECT_EQ(create_worker_0->Do(), 0);
+
+    ICommand* create_worker = new CreateUnit(UnitType::WorkerType, 0);
+    EXPECT_EQ(create_worker->Do(), 0);
+
+    ICommand* create_warrior = new CreateUnit(UnitType::WarriorType, 0);
+    EXPECT_EQ(create_warrior->Do(), 0);
+
+    ICommand* worker_go = new Go(UnitCommonType::WorkerCommonType, 1, Up);
+    factory->list_worker[1]->NewTurn();
+    EXPECT_EQ(worker_go->Do(), 0);
+    EXPECT_EQ(map->worker(my_city_location.Direction(Direction::Up)), factory->list_worker[1]);
+    factory->list_worker[1]->NewTurn();
+    EXPECT_EQ(worker_go->Do(), 0);
+    EXPECT_EQ(map->worker(my_city_location.Direction(Direction::Up).Direction(Direction::Up)), factory->list_worker[1]);
+    EXPECT_EQ(worker_go->Do(), 1);
+
+    ICommand* warrior_go = new Go(UnitCommonType::CombatCommonType, 0, Direction::Right);
+    factory->list_combat_unit[0]->NewTurn();
+    EXPECT_EQ(warrior_go->Do(), 0);
+    EXPECT_EQ(map->combat(my_city_location.Direction(Direction::Right)), factory->list_combat_unit[0]);
+
+    ICommand* create_colonist = new CreateUnit(UnitType::ColonistType, 0);
+    EXPECT_EQ(create_colonist->Do(), 0);
+
+    ICommand* colonist_go = new Go(UnitCommonType::ColonistCommonType, 0, Right);
+    factory->list_colonist[0]->NewTurn();
+    EXPECT_EQ(colonist_go->Do(), 0);
+    EXPECT_EQ(map->colonist(my_city_location.Direction(Direction::Right)), factory->list_colonist[0]);
+
+    delete worker_go;
+    delete warrior_go;
+    delete colonist_go;
+    delete build_city;
+    delete build_city_1;
+    delete create_worker;
+    delete create_worker_0;
+    delete create_warrior;
+    delete create_colonist;
+    delete factory;
+    delete my_city_factory;
+    delete map;
+}
+
+TEST(Command, Attack) {
+    Money my_money;
+    my_money.Add(11700, 11500 , 12100);
+    Money opponent_money;
+    opponent_money.Add(11700, 11500 , 12100);
+    auto map = new Map();
+    auto factory = new UnitFactory(Player::Me, map, my_money, Race::Fire);
+    Unit::my_unit_factory = factory;
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, opponent_money, Race::Air);
+    Unit::opponent_unit_factory = enemy_factory;
+    auto my_city_factory = new CityFactory(Player::Me, map);
+    City::my_city_factory = my_city_factory;
+    auto opponent_city_factory = new CityFactory(Player::Opponent, map);
+    City::opponent_city_factory = opponent_city_factory;
+    ICommand::my_unit_factory = factory;
+    ICommand::opponent_unit_factory = enemy_factory;
+    ICommand::my_city_factory = my_city_factory;
+    ICommand::opponent_city_factory = opponent_city_factory;
+
+    ICommand* build_city = new BuildCity(0);
+    ICommand* build_archer_tower = new CreateTower(TowerType::ArcherTower, 0);
+    ICommand* build_wizard_tower = new CreateTower(TowerType::WizardTower, 0);
+    ICommand* end = new End();
+
+    Location my_city_location(4, 5);
+
+    auto temp_city = new City(my_city_location);
+    factory->AddColonist(temp_city);
+    delete temp_city;
+
+    build_city->Do();
+
+    EXPECT_NE(map->city(my_city_location), nullptr);
+    EXPECT_EQ(map->city(my_city_location)->which, Player::Me);
+
+    ICommand* create_archer = new CreateUnit(UnitType::ArcherType, 0);
+    ICommand* create_wizard = new CreateUnit(UnitType::WizardType, 0);
+
+    create_archer->Do();
+    create_wizard->Do();
+
+    EXPECT_EQ(map->combat(my_city_location), nullptr);
+    EXPECT_EQ(factory->list_combat_unit.size(), 0);
+
+    build_archer_tower->Do();
+
+    create_archer->Do();
+    create_wizard->Do();
+
+    EXPECT_EQ(factory->list_combat_unit.size(), 1);
+    EXPECT_EQ(map->combat(my_city_location), factory->list_combat_unit[0]);
+
+    factory->list_combat_unit[0]->NewTurn();
+    factory->list_combat_unit[0]->Go(Direction::Down);
+
+    build_wizard_tower->Do();
+
+    create_wizard->Do();
+
+    EXPECT_EQ(factory->list_combat_unit.size(), 2);
+    EXPECT_EQ(map->combat(my_city_location), factory->list_combat_unit[1]);
+
+    Location opponent_city_location(5, 5);
+
+    temp_city = new City(opponent_city_location);
+    enemy_factory->AddColonist(temp_city);
+    delete temp_city;
+    opponent_city_factory->AddCity(enemy_factory->list_colonist[0]);
+    opponent_city_factory->cities.push_back(nullptr);
+
+    EXPECT_EQ(end->Do(), 0);
+    EXPECT_EQ(opponent_city_factory->cities.size(), 1);
+
+    build_archer_tower->Do();
+    create_archer->Do();
+
+    vector<Direction> vec_1(1, Direction::Right);
+    vector<Direction> vec_2(2, Direction::Down);
+
+    ICommand* attack_1_down = new Attack(0, vec_1);
+    ICommand* attack_2_down = new Attack(0, vec_2);
+
+    EXPECT_EQ(end->Do(), 0);
+    EXPECT_EQ(end->Do(), 0);
+
+    EXPECT_EQ(attack_1_down->Do(), 1);
+
+    EXPECT_EQ(end->Do(), 0);
+    EXPECT_EQ(end->Do(), 0);
+    EXPECT_EQ(attack_2_down->Do(), 0);
+    EXPECT_EQ(factory->list_combat_unit[0]->health, factory->list_combat_unit[0]->MAX_HEALTH - enemy_factory->list_combat_unit[0]->damage);
+
+    EXPECT_EQ(end->Do(), 0);
+
+    delete end;
+    delete attack_1_down;
+    delete attack_2_down;
+    delete build_archer_tower;
+    delete build_wizard_tower;
+    delete create_wizard;
+    delete create_archer;
+    delete build_city;
+    delete factory;
+    delete enemy_factory;
+    delete my_city_factory;
+    delete opponent_city_factory;
     delete map;
 }

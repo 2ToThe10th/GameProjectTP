@@ -17,20 +17,20 @@ std::string CombatUnit::Info() {
     return Unit::Info() + " damage: " + to_string(damage);
 }
 
-void CombatUnit::Go(Direction where) {
+unsigned int CombatUnit::Go(Direction where) {
     Location new_location = location.Direction(where);
 
     if(already_move) {
         std::cout << "This combat has already moved this turn" << std::endl;
-        return;
+        return 1;
     }
     if(!new_location.IsOnField()) {
         std::cout << "Units can go only in the fields" << std::endl;
-        return;
+        return 1;
     }
     if(map->combat(new_location) != nullptr) {
         std::cout << "only one combat unit can be on the field" << std::endl;
-        return;
+        return 1;
     }
     if(map->colonist(new_location) != nullptr && map->colonist(new_location)->which != which) {
         if(which == Player::Me) {
@@ -89,6 +89,8 @@ void CombatUnit::Go(Direction where) {
     }
 
     already_move = true;
+
+    return 0;
 }
 
 CombatUnit::~CombatUnit() {
