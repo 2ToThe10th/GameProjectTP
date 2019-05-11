@@ -6,7 +6,7 @@
 
 class End: public ICommand {
 public:
-    End() = default;
+    End();
 
     unsigned int Do() override;
 };

@@ -104,12 +104,12 @@ Resource Map::resource(Location location) {
     return map_resource[location.x][location.y];
 }
 
-void Map::Generate() {
+void Map::Generate(unsigned int seed) {
     // ____ |______
     // |    |
     // |
 
-    std::mt19937 generate_random(time(nullptr));
+    std::mt19937 generate_random(seed);
 
     for(int i = 0; i < MAX_HEIGHT; ++i) {
         for(int j = 0; j < MAX_WIDTH / 2; ++j) {

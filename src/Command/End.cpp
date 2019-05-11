@@ -55,3 +55,7 @@ unsigned int End::Do() {
 
     return 0;
 }
+
+End::End() {
+    ICommand::is_end = true;
+}

@@ -29,7 +29,7 @@ public:
     Map();
     ~Map() = default;
 
-    void Generate();
+    void Generate(unsigned int seed = 0);
     std::string Info();
 
     CombatUnit*& combat(Location location);

@@ -12,6 +12,7 @@ public:
     static CityFactory* my_city_factory;
     static CityFactory* opponent_city_factory;
 
+    static bool is_end;
     static Player which_turn;
 
     virtual ~ICommand() = default;

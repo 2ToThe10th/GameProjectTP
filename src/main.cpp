@@ -1,9 +1,12 @@
 #include <iostream>
 #include <string>
+#include <Command/End.h>
 #include "GameSocket.h"
 #include "UnitFactory.h"
 #include "CityFactory.h"
 #include "Map.h"
+#include "Command/ICommand.h"
+#include "Interpreter.h"
 
 #ifdef DEBUG
 #include <gtest/gtest.h>
@@ -26,7 +29,7 @@ int main(int argv, char* args[]) {
 
 int Game() {
 
-    Player which_turn = Player::Me;
+    Player which_first_turn = Player::Me;
 
     GameSocket* socket = nullptr;
 
@@ -63,7 +66,7 @@ int Game() {
 
         socket = new GameSocket(host, port);
 
-        which_turn = Player::Opponent;
+        which_first_turn = Player::Opponent;
 
     }
     else {
@@ -117,7 +120,7 @@ int Game() {
 
     string opponent_race;
 
-    if(which_turn == Player::Me) {
+    if(which_first_turn == Player::Me) {
         socket->Write(string_to_send);
         opponent_race = socket->Read();
     }
@@ -125,6 +128,8 @@ int Game() {
         opponent_race = socket->Read();
         socket->Write(string_to_send);
     }
+
+    cout << opponent_race << endl;
 
     Race opponent_race_enum;
 
@@ -162,8 +167,87 @@ int Game() {
     cout << my_city_factory->Info() << endl;
     cout << opponent_city_factory->Info() << endl;
 
-    map->Generate();
+    Unit::my_unit_factory = my_factory;
+    Unit::opponent_unit_factory = opponent_factory;
+    ICommand::socket = socket;
+    ICommand::my_unit_factory = my_factory;
+    ICommand::opponent_unit_factory = opponent_factory;
+    ICommand::my_city_factory = my_city_factory;
+    ICommand::opponent_city_factory = opponent_city_factory;
 
+    unsigned int seed;
+
+    if(which_first_turn == Player::Me) {
+        seed = time(nullptr);
+        string seed_string = std::to_string(seed);
+        socket->Write(seed_string);
+    }
+    else {
+        seed = std::stoi(socket->Read());
+    }
+
+    map->Generate(seed);
+
+    Location my_first_city_location(0, 0);
+    Location opponent_first_city_location(0, 0);
+
+    if(which_first_turn == Player::Me) {
+        my_first_city_location = Location(9, 6);
+        opponent_first_city_location = Location(9, 13);
+    }
+    else{
+        my_first_city_location = Location(9, 13);
+        opponent_first_city_location = Location(9, 6);
+    }
+
+    auto temporary_city = new City(my_first_city_location);
+    my_factory->AddColonist(temporary_city);
+    delete temporary_city;
+
+    my_city_factory->AddCity(my_factory->list_colonist[0]);
+    my_factory->AddWarrior(my_city_factory->cities[0]);
+    my_factory->list_combat_unit[0]->NewTurn();
+    my_factory->AddWorker(my_city_factory->cities[0]);
+    my_factory->list_worker[0]->NewTurn();
+
+    temporary_city = new City(opponent_first_city_location);
+    opponent_factory->AddColonist(temporary_city);
+    delete temporary_city;
+
+    opponent_city_factory->AddCity(opponent_factory->list_colonist[0]);
+    opponent_factory->AddWarrior(opponent_city_factory->cities[0]);
+    opponent_factory->list_combat_unit[0]->NewTurn();
+    opponent_factory->AddWorker(opponent_city_factory->cities[0]);
+    opponent_factory->list_worker[0]->NewTurn();
+
+    if(which_first_turn == Player::Opponent) {
+        ICommand* end = new End();
+        end->Do();
+    }
+
+    while(true) {
+        string string_command;
+        if(ICommand::which_turn == Player::Me) {
+            getline(cin, string_command);
+        }
+        else {
+            string_command = socket->Read();
+        }
+        Interpreter interpreter(string_command);
+        ICommand* command = interpreter.Translate();
+
+        unsigned int command_result = command->Do();
+
+        if(command_result == 0) {
+           command->Send();
+        }
+        if(command_result && ICommand::is_end) {
+            command->Send();
+            ICommand::is_end = false;
+            break;
+        }
+        //Graphiс
+    }
 
 
 //delete part

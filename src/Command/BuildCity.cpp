@@ -13,6 +13,12 @@ unsigned int BuildCity::Do() {
         unit_factory = ICommand::opponent_unit_factory;
 
     }
+
+    if(colonist_id < 0 || colonist_id >= unit_factory->list_colonist.size()) {
+        std::cout << "No colonist with this id" << std::endl;
+        return 1;
+    }
+
     return city_factory->AddCity(unit_factory->list_colonist[colonist_id]);
 }
 

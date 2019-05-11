@@ -6,6 +6,7 @@ UnitFactory* ICommand::opponent_unit_factory = nullptr;
 CityFactory* ICommand::my_city_factory = nullptr;
 CityFactory* ICommand::opponent_city_factory = nullptr;
 
+bool ICommand::is_end = false;
 Player ICommand::which_turn = Player::Me;
 
 void ICommand::NewTurn() {

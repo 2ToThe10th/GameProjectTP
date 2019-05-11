@@ -10,6 +10,7 @@
 #include <Command/Mine.h>
 #include <Command/Go.h>
 #include <Command/Attack.h>
+#include <Interpreter.h>
 #include "Location.h"
 #include "Map.h"
 #include "Money.h"
@@ -2811,6 +2812,73 @@ TEST(Command, Attack) {
     delete build_wizard_tower;
     delete create_wizard;
     delete create_archer;
+    delete build_city;
+    delete factory;
+    delete enemy_factory;
+    delete my_city_factory;
+    delete opponent_city_factory;
+    delete map;
+}
+
+TEST(Interpreter, BuildCity) {
+    Money my_money;
+    my_money.Add(11700, 11500 , 12100);
+    Money opponent_money;
+    opponent_money.Add(11700, 11500 , 12100);
+    auto map = new Map();
+    auto factory = new UnitFactory(Player::Me, map, my_money, Race::Fire);
+    Unit::my_unit_factory = factory;
+    auto enemy_factory = new UnitFactory(Player::Opponent, map, opponent_money, Race::Air);
+    Unit::opponent_unit_factory = enemy_factory;
+    auto my_city_factory = new CityFactory(Player::Me, map);
+    City::my_city_factory = my_city_factory;
+    auto opponent_city_factory = new CityFactory(Player::Opponent, map);
+    City::opponent_city_factory = opponent_city_factory;
+    ICommand::my_unit_factory = factory;
+    ICommand::opponent_unit_factory = enemy_factory;
+    ICommand::my_city_factory = my_city_factory;
+    ICommand::opponent_city_factory = opponent_city_factory;
+
+    ICommand* build_city = new BuildCity(0);
+    ICommand* build_archer_tower = new CreateTower(TowerType::ArcherTower, 0);
+    ICommand* build_wizard_tower = new CreateTower(TowerType::WizardTower, 0);
+    ICommand* end = new End();
+
+    Location my_city_location(4, 5);
+
+    auto temp_city = new City(my_city_location);
+    factory->AddColonist(temp_city);
+    delete temp_city;
+
+    Interpreter* interpreter = new Interpreter("buildcty 0");
+    ICommand* command = interpreter->Translate();
+    EXPECT_EQ(command->Do(), 1);
+    delete command;
+    delete interpreter;
+    interpreter = new Interpreter("bUilcIty sss");
+    command = interpreter->Translate();
+    EXPECT_EQ(command->Do(), 1);
+    delete command;
+    delete interpreter;
+    interpreter = new Interpreter("bUilcIty s0");
+    command = interpreter->Translate();
+    EXPECT_EQ(command->Do(), 1);
+    delete command;
+    delete interpreter;
+    interpreter = new Interpreter("bUildcIty 3");
+    command = interpreter->Translate();
+    EXPECT_EQ(command->Do(), 1);
+    delete command;
+    delete interpreter;
+    interpreter = new Interpreter("bUiLDciTy 0");
+    command = interpreter->Translate();
+    EXPECT_EQ(command->Do(), 0);
+    delete command;
+    delete interpreter;
+
+    delete end;
+    delete build_archer_tower;
+    delete build_wizard_tower;
     delete build_city;
     delete factory;
     delete enemy_factory;
