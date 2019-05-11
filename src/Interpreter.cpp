@@ -132,7 +132,7 @@ ICommand *Interpreter::Translate() {
             if(tower_type == "archer") {
                 return new CreateTower(TowerType::ArcherTower, city_id);
             }
-            else if(tower_type == "worker") {
+            else if(tower_type == "wizard") {
                 return new CreateTower(TowerType::WizardTower, city_id);
             }
             else {

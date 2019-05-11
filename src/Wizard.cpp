@@ -108,7 +108,7 @@ unsigned int Wizard::Attack(std::vector<Direction> &where_attack) {
         }
     }
     else if(race == Race::Air) {
-        if (map->combat(location_to_attack) == nullptr || map->combat(location_to_attack)->which != which) {
+        if (map->combat(location_to_attack) == nullptr || map->combat(location_to_attack)->which != which || location_to_attack == location) {
             std::cout << "No your combat unit on field to heal" << std::endl;
             return 1;
         }
