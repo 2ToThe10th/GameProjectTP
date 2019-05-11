@@ -37,10 +37,10 @@ unsigned int Worker::Go(Direction where) {
 
     if(map->city(location) != nullptr && map->city(location)->which == which) {
         if(which == Player::Me) {
-            my_unit_factory->money.Add(cary_gold, cary_silver, cary_wood);
+            my_unit_factory->money.Add(cary_wood, cary_silver, cary_gold);
         }
         else {
-            opponent_unit_factory->money.Add(cary_gold, cary_silver, cary_wood);
+            opponent_unit_factory->money.Add(cary_wood, cary_silver, cary_gold);
         }
         cary_gold = 0;
         cary_silver = 0;
@@ -79,10 +79,10 @@ unsigned int Worker::Mine() {
 
     if(map->city(location) != nullptr && map->city(location)->which == which) {
         if(which == Player::Me) {
-            my_unit_factory->money.Add(cary_gold, cary_silver, cary_wood);
+            my_unit_factory->money.Add(cary_wood, cary_silver, cary_gold);
         }
         else {
-            opponent_unit_factory->money.Add(cary_gold, cary_silver, cary_wood);
+            opponent_unit_factory->money.Add(cary_wood, cary_silver, cary_gold);
         }
         cary_gold = 0;
         cary_silver = 0;

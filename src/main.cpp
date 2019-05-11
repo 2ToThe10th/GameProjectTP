@@ -171,6 +171,8 @@ int Game() {
 
     Unit::my_unit_factory = my_factory;
     Unit::opponent_unit_factory = opponent_factory;
+    City::my_city_factory = my_city_factory;
+    City::opponent_city_factory = opponent_city_factory;
     ICommand::socket = socket;
     ICommand::my_unit_factory = my_factory;
     ICommand::opponent_unit_factory = opponent_factory;
@@ -195,10 +197,10 @@ int Game() {
 
     if(which_first_turn == Player::Me) {
         my_first_city_location = Location(9, 6);
-        opponent_first_city_location = Location(9, 13);
+        opponent_first_city_location = Location(9, 7);//(9, 13)
     }
     else{
-        my_first_city_location = Location(9, 13);
+        my_first_city_location = Location(9, 7);//(9,13)
         opponent_first_city_location = Location(9, 6);
     }
 
@@ -231,6 +233,10 @@ int Game() {
     Graphic graphic(map);
 
     graphic.Draw();
+    if(ICommand::which_turn == Player::Me) {
+        cout << "Your turn\n";
+    }
+    cout << "Your money:" << my_money.Info() << '\n' << "Your opponent money:" << opponent_money.Info() << endl;
 
     while(true) {
         string string_command;
@@ -247,7 +253,6 @@ int Game() {
         unsigned int command_result = command->Do();
 
         if(command_result == 0) {
-            cout << (ICommand::which_turn == Player::Me) << ' ' << ICommand::is_end << endl;
             if((ICommand::which_turn == Player::Me && !ICommand::is_end) ||
                     (ICommand::which_turn == Player::Opponent && ICommand::is_end)) {
                 command->Send();

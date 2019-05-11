@@ -6,10 +6,12 @@
 
 class Money {
 private:
-    static const int START_RESOURCES_AMT = 100500;
-    int gold_amt = START_RESOURCES_AMT;
-    int iron_amt = START_RESOURCES_AMT;
-    int wood_amt = START_RESOURCES_AMT;
+    static const int START_WOOD_AMT = 300;
+    static const int START_SILVER_AMT = 120;
+    static const int START_GOLD_AMT = 10;
+    int gold_amt = START_GOLD_AMT;
+    int iron_amt = START_SILVER_AMT;
+    int wood_amt = START_WOOD_AMT;
 public:
     Money() = default;
     ~Money() = default;

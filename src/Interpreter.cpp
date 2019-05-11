@@ -67,7 +67,7 @@ ICommand *Interpreter::Translate() {
 
     string command_name = ToLowercase(split_command[0]);
 
-    if(command_name == "buildcity") {
+    if(command_name == "buildcity" || command_name == "bc") {
         if(split_command.size() != 2) {
             return new WrongCommand();
         }
@@ -83,7 +83,7 @@ ICommand *Interpreter::Translate() {
             return new BuildCity(id_colonist);
         }
     }
-    else if(command_name == "createunit") {
+    else if(command_name == "createunit" || command_name == "cu") {
         if(split_command.size() != 3) {
             return new WrongCommand();
         }
@@ -116,7 +116,7 @@ ICommand *Interpreter::Translate() {
             }
         }
     }
-    else if(command_name == "createtower") {
+    else if(command_name == "createtower" || command_name == "ct") {
         if(split_command.size() != 3) {
             return new WrongCommand();
         }
@@ -129,10 +129,10 @@ ICommand *Interpreter::Translate() {
                 return new WrongCommand();
             }
             string tower_type = ToLowercase(split_command[1]);
-            if(tower_type == "archer") {
+            if(tower_type == "archer" || tower_type == "a") {
                 return new CreateTower(TowerType::ArcherTower, city_id);
             }
-            else if(tower_type == "wizard") {
+            else if(tower_type == "wizard" || tower_type == "w") {
                 return new CreateTower(TowerType::WizardTower, city_id);
             }
             else {
@@ -140,7 +140,7 @@ ICommand *Interpreter::Translate() {
             }
         }
     }
-    else if(command_name == "end") {
+    else if(command_name == "end" || command_name == "e") {
         if(split_command.size() != 1) {
             return new WrongCommand();
         }
@@ -148,7 +148,7 @@ ICommand *Interpreter::Translate() {
             return new End();
         }
     }
-    else if(command_name == "mine") {
+    else if(command_name == "mine" || command_name == "m") {
         if(split_command.size() != 2) {
             return new WrongCommand();
         }
@@ -163,7 +163,7 @@ ICommand *Interpreter::Translate() {
             return new Mine(worker_id);
         }
     }
-    else if(command_name == "go") {
+    else if(command_name == "go" || command_name == "g") {
         if(split_command.size() != 4) {
             return new WrongCommand();
         }
@@ -209,7 +209,7 @@ ICommand *Interpreter::Translate() {
             }
         }
     }
-    else if(command_name == "attack") {
+    else if(command_name == "attack" || command_name == "a") {
         if(split_command.size() != 3) {
             return new WrongCommand();
         }

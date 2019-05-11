@@ -70,6 +70,23 @@ void Graphic::Draw() {
                     cout << "0";
                 }
                 cout << id;
+
+                if(map->city(Location(i, j))->IsWizardTowerExist()) {
+                    if (map->city(Location(i, j))->which == Player::Me) {
+                        cout << set_blue_background_color;
+                    } else {
+                        cout << set_cyan_background_color;
+                    }
+                }
+                else if(map->city(Location(i, j))->IsArcherTowerExist()) {
+                    if(map->city(Location(i, j))->which == Player::Me) {
+                        cout << set_yellow_background_color;
+                    }
+                    else {
+                        cout << set_magenta_background_color;
+                    }
+                }
+
                 cout << "C";
 
                 cout << set_default_background_color;
