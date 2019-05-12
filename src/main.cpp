@@ -271,6 +271,7 @@ int Game() {
         ICommand* end = new End();
         end->Do();
         ICommand::is_end = false;
+        delete end;
     }
 
     Graphic graphic(map);
