@@ -168,6 +168,7 @@ TEST(CityFactory, AddCity) {
 
 TEST(Money, Add_Take) {
     Money money;
+    money.Add(100200, 100380 , 100490);
 
     EXPECT_EQ(money.Info(), "Wood:100500 Iron:100500 Gold:100500");
 
@@ -918,6 +919,7 @@ TEST(FireWizard, Attack) {
 TEST(WaterFactory, Add) {
 
     Money money;
+    money.Add(11700, 11500 , 12100);
 
     auto map = new Map();
 
@@ -1250,6 +1252,7 @@ TEST(WaterFactory, Add) {
 TEST(EarthFactory, Add) {
 
     Money money;
+    money.Add(11700, 11500 , 12100);
 
     auto map = new Map();
 
@@ -1583,6 +1586,7 @@ TEST(EarthFactory, Add) {
 TEST(AirFactory, Add) {
 
     Money money;
+    money.Add(11700, 11500 , 12100);
 
     auto map = new Map();
 
@@ -1916,6 +1920,7 @@ TEST(AirFactory, Add) {
 TEST(FireFactory, Add) {
 
     Money money;
+    money.Add(11700, 11500 , 12100);
 
     auto map = new Map();
 
