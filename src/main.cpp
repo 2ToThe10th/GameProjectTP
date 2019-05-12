@@ -8,6 +8,7 @@
 #include "Command/ICommand.h"
 #include "Interpreter.h"
 #include "Graphic.h"
+#include "CryptoSocket.h"
 
 #ifdef DEBUG
 #include <gtest/gtest.h>
@@ -46,7 +47,7 @@ int Game() {
         int port;
         cin >> port;
 
-        socket = new GameSocket(port);
+        socket = new CryptoSocket(port);
 
     }
     else if(user_answer == 'C' || user_answer == 'c') {
@@ -65,7 +66,7 @@ int Game() {
 
         cin >> port;
 
-        socket = new GameSocket(host, port);
+        socket = new CryptoSocket(host, port);
 
         which_first_turn = Player::Opponent;
 
@@ -197,10 +198,10 @@ int Game() {
 
     if(which_first_turn == Player::Me) {
         my_first_city_location = Location(9, 6);
-        opponent_first_city_location = Location(9, 7);//(9, 13)
+        opponent_first_city_location = Location(9, 13);
     }
     else{
-        my_first_city_location = Location(9, 7);//(9,13)
+        my_first_city_location = Location(9, 13);
         opponent_first_city_location = Location(9, 6);
     }
 

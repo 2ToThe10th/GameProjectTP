@@ -17,11 +17,10 @@ public:
     explicit GameSocket(char host_name[], int port);
     GameSocket(const GameSocket& to_copy) = delete;
     GameSocket& operator=(const GameSocket&) = delete;
-    ~GameSocket();
+    virtual ~GameSocket();
 
-    string Read();
-
-    void Write(string& send_message);
+    virtual string Read();
+    virtual void Write(string& send_message);
 };
 
 
