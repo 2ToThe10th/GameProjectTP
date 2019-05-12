@@ -28,7 +28,8 @@ GameSocket::GameSocket(int port) {
     server = true;
 
     if(port <= 0 || port >= 65536) {
-        cout << "Port mighte be between 1 and 65535" << endl;
+        cout << "Port might be between 1 and 65535" << endl;
+        counter = 0;
         throw -9;
     }
 
@@ -45,11 +46,13 @@ GameSocket::GameSocket(int port) {
     if(bind(server_sd, (sockaddr*)&addr, sizeof(addr)) != 0) {
         perror("error bind");
         cout << "This port is not free. Try to choose another port or wait while this port will became free." << endl;
+        counter = 0;
         throw -1;
     }
 
     if(listen(server_sd, 5) != 0) {
         perror("error listen" );
+        counter = 0;
         throw -2;
     }
 
@@ -70,6 +73,7 @@ GameSocket::GameSocket(char host_name[], int port) {
 
     if(port <= 0 || port >= 65536) {
         cout << "Port might be between 1 and 65535" << endl;
+        counter = 0;
         throw -9;
     }
 
@@ -83,6 +87,7 @@ GameSocket::GameSocket(char host_name[], int port) {
 
     if(connect(sd, (sockaddr*)&dest, sizeof(dest)) != 0) {
         perror("error connect" );
+        counter = 0;
         throw -3;
     }
 }
@@ -109,8 +114,7 @@ string GameSocket::Read() {
     char char_message[MAX_MESSAGE_SIZE + 10];
 
     if(read(sd, char_message, MAX_MESSAGE_SIZE) == -1) {
-        perror("error read");
-        throw -4;
+        perror("error while reading socket");
     }
 
     string message;
@@ -135,8 +139,7 @@ void GameSocket::Write(string &send_message) {
     char_message[MAX_MESSAGE_SIZE] = '\0';
 
     if(write(sd, char_message, MAX_MESSAGE_SIZE + 1) == -1) {
-        perror("error write");
-        throw -5;
+        perror("error while writing to socket");
     }
 }
 

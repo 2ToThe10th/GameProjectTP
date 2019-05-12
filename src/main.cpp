@@ -35,46 +35,91 @@ int Game() {
 
     GameSocket* socket = nullptr;
 
-    cout << "Do you want to create a server or connect to exist?[S/C]" << endl;
+    bool s_c_trouble = false;
 
-    char user_answer;
-    cin >> user_answer;
+    do {
+        cout << "Do you want to create a server or connect to exist?[S/C]" << endl;
+        char user_answer;
+        cin >> user_answer;
+        s_c_trouble = false;
+        if (user_answer == 'S' || user_answer == 's') {
+            bool trouble = false;
+            do {
+                trouble = false;
+                try {
+                    cout << "Choose port:" << endl;
 
-    if(user_answer == 'S' || user_answer == 's') {
+                    string port_string;
+                    cin >> port_string;
 
-        cout << "Choose port:" << endl;
+                    if(port_string.size() > 6) {
+                        cout << "Port might be between 1 and 65535" << endl;
+                        throw 9;
+                    }
 
-        int port;
-        cin >> port;
+                    int port = 0;
+                    for(auto i: port_string) {
+                        if(i >= '0' && i <= '9') {
+                            port = 10 * port + int(i - '0');
+                        }
+                    }
 
-        socket = new CryptoSocket(port);
+                    socket = new CryptoSocket(port);
+                }
+                catch (...) {
 
-    }
-    else if(user_answer == 'C' || user_answer == 'c') {
+                    cout << "Please retype your input. Check pronunciation" << endl;
+                    trouble = true;
+                }
 
-        cout << "Choose host:" << endl;
+            } while(trouble);
 
-        char host[1000];
-        if(scanf("%900s", host) != 1) {
-            cout << "error: scanf host" << endl;
-            throw -7;
+        } else if (user_answer == 'C' || user_answer == 'c') {
+            bool trouble = false;
+            do {
+                trouble = false;
+                try {
+
+                    cout << "Choose host:" << endl;
+
+                    char host[1000];
+                    if (scanf("%900s", host) != 1) {
+                        cout << "error: scanf host" << endl;
+                        throw -7;
+                    }
+
+                    cout << "Choose port:" << endl;
+
+                    string port_string;
+                    cin >> port_string;
+
+                    if(port_string.size() > 6) {
+                        cout << "Port might be between 1 and 65535" << endl;
+                        throw 9;
+                    }
+
+                    int port = 0;
+                    for(auto i: port_string) {
+                        if(i >= '0' && i <= '9') {
+                            port = 10 * port + int(i - '0');
+                        }
+                    }
+
+                    socket = new CryptoSocket(host, port);
+
+                    which_first_turn = Player::Opponent;
+                }
+                catch (...) {
+                    cout << "Please retype your input. Check pronunciation" << endl;
+                    trouble = true;
+                }
+            } while(trouble);
+
+        } else {
+            cout << "Wrong answer. Answer might be 'S' or 'C'" << endl;
+            s_c_trouble = true;
         }
-
-        cout << "Choose port:" << endl;
-
-        int port;
-
-        cin >> port;
-
-        socket = new CryptoSocket(host, port);
-
-        which_first_turn = Player::Opponent;
-
-    }
-    else {
-        cout << "Wrong answer. Answer might be 'S' or 'C'" << endl;
-        return 0;
-    }
+    } while(s_c_trouble);
 
     auto map = new Map();
 
