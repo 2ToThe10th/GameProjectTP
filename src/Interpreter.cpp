@@ -58,7 +58,7 @@ int Interpreter::ToInt(string str) {
     return ret;
 }
 
-ICommand *Interpreter::Translate() {
+ICommand* Interpreter::Translate() {
     auto split_command = Split();
 
     if(split_command.empty()) {

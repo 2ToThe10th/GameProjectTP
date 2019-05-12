@@ -212,9 +212,6 @@ int Game() {
     auto my_city_factory = new CityFactory(Player::Me, map);
     auto opponent_city_factory = new CityFactory(Player::Opponent, map);
 
-    cout << my_city_factory->Info() << endl;
-    cout << opponent_city_factory->Info() << endl;
-
     Unit::my_unit_factory = my_factory;
     Unit::opponent_unit_factory = opponent_factory;
     City::my_city_factory = my_city_factory;
@@ -310,9 +307,11 @@ int Game() {
                 command->Send();
             }
             ICommand::is_end = false;
+            delete command;
             break;
         }
         else {
+            delete command;
             continue;
         }
         graphic.Draw();
@@ -320,6 +319,8 @@ int Game() {
             cout << "Your turn\n";
         }
         cout << "Your money:" << my_money.Info() << '\n' << "Your opponent money:" << opponent_money.Info() << endl;
+
+        delete command;
     }
 
 
