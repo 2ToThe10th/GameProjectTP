@@ -2,7 +2,7 @@
 
 ### [![Build Status](https://travis-ci.org/2ToThe10th/Game.svg?branch=dev)](https://travis-ci.org/2ToThe10th/Game)
 
-Для того чтобы запустить тесты для проверки создания юнитов и городов,
+Для того чтобы запустить юнит тесты,
 воспользуйтесь командами:
 
 ```cmake -DDEBUG=1```
