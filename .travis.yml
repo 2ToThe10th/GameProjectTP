@@ -1,0 +1,36 @@
+dist: xenial
+sudo: required
+
+language: cpp
+
+os:
+  - linux
+
+compiler:
+  - gcc
+
+install:
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt update
+  - sudo apt install gcc-snapshot
+  - sudo apt install gcc-6 g++-6
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
+
+script:
+  - mkdir cmake-build-release
+  - cd cmake-build-release
+  - cmake ../
+  - make
+  - cd ..
+  - mkdir cmake-build-debug
+  - cd cmake-build-debug
+  - cmake ../ -DDEBUG=True
+  - make
+  - ./game
+
+notifications:
+  email:
+    recipients:
+    - grib.a@phystech.edu
+    on_success: always
+    on_failure: always
