@@ -39,7 +39,7 @@ GameSocket::GameSocket(int port) {
     addr.sin_port = htons(port);
     char host_name[1000];
     gethostname(host_name, 999);
-    inet_aton(host_name, &addr.sin_addr);
+    inet_aton("0.0.0.0", &addr.sin_addr);
 
     server_sd = socket(PF_INET, SOCK_STREAM, 0);
 
